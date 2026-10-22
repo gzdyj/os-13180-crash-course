@@ -1,606 +1,329 @@
 <!DOCTYPE html>
-<html lang="zh-CN" data-page-node-id="gGxeCDmGxsuSPnuTeKEE4X">
-<head data-page-node-id="xjXt7H1qIMk7KRpogGlo2R">
-<meta charset="UTF-8" data-page-node-id="FYGhitNdCXPHLk9eggL4kl">
-<meta name="viewport" content="width=device-width, initial-scale=1.0" data-page-node-id="7GqsUeGBDLCNn2Cir4B5tL">
-<title>操作系统(13180) 两天速成突击</title>
-<style>
-  * { margin:0; padding:0; box-sizing:border-box; }
-  body { font-family:"Microsoft YaHei","PingFang SC",sans-serif; background:#f5f6fa; color:#2c3e50; line-height:1.7; }
-  .container { max-width:960px; margin:0 auto; padding:16px; }
-  header { background:linear-gradient(135deg,#1a73e8,#6c5ce7); color:#fff; border-radius:12px; padding:28px 20px; text-align:center; margin-bottom:20px; }
-  header h1 { font-size:1.6em; margin-bottom:8px; }
-  header p { opacity:.92; font-size:.95em; }
-  .badge-row { display:flex; gap:10px; justify-content:center; margin-top:14px; flex-wrap:wrap; }
-  .badge { background:rgba(255,255,255,.2); padding:4px 14px; border-radius:999px; font-size:.85em; }
-  nav { display:flex; gap:8px; flex-wrap:wrap; justify-content:center; margin-bottom:20px; }
-  nav button { padding:8px 18px; border:none; border-radius:8px; background:#fff; color:#1a73e8; font-weight:bold; cursor:pointer; font-size:.95em; box-shadow:0 2px 6px rgba(0,0,0,.08); }
-  nav button.active { background:#1a73e8; color:#fff; }
-  section { display:none; animation:fadeIn .3s; }
-  section.active { display:block; }
-  @keyframes fadeIn { from{opacity:0} to{opacity:1} }
-  .card { background:#fff; border-radius:12px; padding:20px; margin-bottom:16px; box-shadow:0 2px 8px rgba(0,0,0,.06); }
-  .card h2 { color:#1a73e8; font-size:1.2em; margin-bottom:12px; border-left:4px solid #1a73e8; padding-left:10px; }
-  .card h3 { color:#6c5ce7; font-size:1.05em; margin:14px 0 6px; }
-  table { width:100%; border-collapse:collapse; margin:10px 0; font-size:.92em; }
-  th,td { border:1px solid #e0e0e0; padding:8px 10px; text-align:left; }
-  th { background:#eef3fd; color:#1a73e8; }
-  tr:nth-child(even) { background:#fafbfe; }
-  .formula { background:#fff8e1; border-left:4px solid #f5a623; padding:10px 14px; border-radius:6px; margin:10px 0; font-weight:bold; }
-  .tip { background:#e8f5e9; border-left:4px solid #2e9e5b; padding:10px 14px; border-radius:6px; margin:10px 0; font-size:.93em; }
-  .warn { background:#fdecea; border-left:4px solid #d93025; padding:10px 14px; border-radius:6px; margin:10px 0; font-size:.93em; }
-  ol,.card ul { padding-left:22px; margin:8px 0; }
-  li { margin-bottom:6px; }
-  /* 两天计划 */
-  .day-grid { display:grid; grid-template-columns:1fr 1fr; gap:14px; }
-  @media (max-width:700px){ .day-grid{grid-template-columns:1fr;} }
-  .day-card { background:#fff; border-radius:12px; padding:18px; box-shadow:0 2px 8px rgba(0,0,0,.06); border-top:4px solid #6c5ce7; }
-  .day-card.d1 { border-top-color:#1a73e8; }
-  .day-card h3 { color:#2c3e50; margin-bottom:10px; font-size:1.1em; }
-  .slot { margin-bottom:12px; }
-  .slot b { color:#e67e22; font-size:.9em; }
-  .slot ul { font-size:.9em; margin:4px 0 4px 18px; }
-  /* 背诵清单 */
-  .recite-item { background:#fff; border-radius:10px; padding:14px 16px; margin-bottom:10px; box-shadow:0 2px 6px rgba(0,0,0,.05); }
-  .recite-item b { color:#d93025; }
-  .recite-item .en { color:#888; font-size:.85em; }
-  /* 练习题 */
-  .q { background:#fff; border-radius:12px; padding:18px; margin-bottom:14px; box-shadow:0 2px 8px rgba(0,0,0,.06); }
-  .q .tag { display:inline-block; font-size:.78em; padding:2px 10px; border-radius:999px; margin-bottom:8px; }
-  .tag.choice { background:#e3f0ff; color:#1660c9; }
-  .tag.fill { background:#f3e8ff; color:#8244c4; }
-  .tag.judge { background:#e6f4ea; color:#1e7d3c; }
-  .q p { font-weight:bold; margin-bottom:10px; }
-  .opts label { display:block; padding:8px 12px; border:2px solid #eef0f4; border-radius:8px; margin-bottom:6px; cursor:pointer; transition:all .15s; }
-  .opts label:hover { border-color:#b6c9e8; }
-  .opts input { margin-right:8px; }
-  .btn { display:inline-block; background:#1a73e8; color:#fff; border:none; padding:9px 22px; border-radius:8px; cursor:pointer; font-size:.95em; font-weight:bold; margin-right:8px; }
-  .btn.reveal { background:#6c5ce7; }
-  .btn:hover { opacity:.9; }
-  .ans { display:none; margin-top:10px; padding:10px 14px; border-radius:8px; font-size:.93em; }
-  .ans.right { background:#e6f4ea; border-left:4px solid #1e7d3c; }
-  .ans.wrong { background:#fdecea; border-left:4px solid #d93025; }
-  .fill-input { width:100%; padding:8px 12px; border:2px solid #e0e4ea; border-radius:8px; font-size:.95em; margin:6px 0; }
-  .fill-input:focus { outline:none; border-color:#1a73e8; }
-  .score-bar { background:#fff; border-radius:12px; padding:16px 20px; margin-top:20px; text-align:center; box-shadow:0 2px 8px rgba(0,0,0,.06); position:sticky; bottom:12px; }
-  .score-bar b { color:#d93025; font-size:1.2em; }
-  code { background:#eef0f4; padding:2px 6px; border-radius:4px; font-size:.9em; }
-  .kmap { display:grid; grid-template-columns:repeat(auto-fit,minmax(210px,1fr)); gap:12px; }
-  .kbox { background:#fff; border-radius:10px; padding:14px; box-shadow:0 2px 6px rgba(0,0,0,.05); border-top:3px solid #6c5ce7; font-size:.9em; }
-  .kbox b { display:block; color:#1a73e8; margin-bottom:6px; }
-  details { margin:8px 0; }
-  summary { cursor:pointer; color:#1a73e8; font-weight:bold; padding:6px 0; }
-  footer { text-align:center; color:#999; font-size:.85em; padding:20px 0; }
-</style>
-</head>
-<body data-page-node-id="eT6EfAfoAXwctVLtwjjDFu">
-<div class="container" data-page-node-id="BU04rbnVAJVqL5KXCYDf1C">
+<html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#294f40"><meta name="description" content="湖北自考13180操作系统两天冲刺：核心考点、选择练习、算法步骤、简答默写和错题复练。离线可用。"><title>13180 操作系统 · 两天冲刺</title><style>:root{--bg:#f5f4ef;--paper:#fffefa;--ink:#263c35;--muted:#758078;--line:#e1e4da;--green:#294f40;--lime:#dfeab8;--orange:#d16a42;--danger:#b44739;--soft:#edf1e6;--radius:18px}*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font-family:Inter,'Microsoft YaHei','PingFang SC',system-ui,sans-serif;font-size:15px;line-height:1.7}button,input,select,textarea{font:inherit}button,a,input,select,textarea{outline-offset:4px}button{cursor:pointer;border:1px solid var(--line);border-radius:10px;background:var(--paper);color:var(--ink);padding:10px 17px;transition:background .15s,transform .15s}button:hover{background:var(--soft)}button:active{transform:translateY(1px)}button:disabled{cursor:default;opacity:.58}button.primary{background:var(--green);color:#fff;border-color:var(--green)}button.primary:hover{background:#37634f}button.small{font-size:13px;padding:6px 12px}button.ghost{border:0;background:transparent;padding:7px 11px}button.active{background:var(--green);color:#fff;border-color:var(--green)}a{color:var(--green)}h1,h2,h3,p{margin:0}h1{font-size:31px;letter-spacing:-1px;line-height:1.4}h2{font-size:22px;line-height:1.5}h3{font-size:17px}p+p{margin-top:12px}.muted{color:var(--muted)}.tiny{font-size:12px}.smalltext{font-size:13px}.mono{font-family:Consolas,'SFMono-Regular',monospace}.eyebrow{font-size:11px;letter-spacing:2px;text-transform:uppercase;font-weight:700;color:var(--muted)}.app{display:flex;min-height:100vh}.sidebar{width:238px;position:fixed;inset:0 auto 0 0;background:#eeefe7;border-right:1px solid var(--line);padding:34px 21px;display:flex;flex-direction:column;z-index:20}.brand{display:flex;gap:11px;align-items:center;margin:0 7px 34px}.brand-icon{background:var(--green);color:var(--lime);width:39px;height:43px;border-radius:10px;display:grid;place-items:center;font-size:22px}.brand b{display:block;font-size:19px;letter-spacing:1px}.brand span{font-size:10px;color:var(--muted);letter-spacing:2px}.nav-label{padding-left:14px;font-size:11px;letter-spacing:2px;color:#899184;margin-bottom:11px}.nav{display:flex;flex-direction:column;gap:6px}.nav button{display:flex;align-items:center;gap:13px;text-align:left;border:0;background:transparent;padding:12px 14px;border-radius:10px;font-size:14px}.nav button:hover{background:#e3e7d9}.nav button.active{background:var(--green);color:#fff}.nav .icon{font-size:17px;width:23px;text-align:center}.nav .count{margin-left:auto;background:#dfe6d6;color:var(--green);padding:0 7px;border-radius:6px;font-size:11px}.side-footer{margin-top:auto;padding:24px 10px 0}.side-note{border-top:1px solid #d9dece;padding-top:18px;font-size:12px;color:#778174}.side-dot{display:inline-block;width:6px;height:6px;background:#6a8b54;border-radius:50%;margin-right:7px}.workspace{margin-left:238px;width:calc(100% - 238px)}.topbar{display:flex;align-items:center;justify-content:space-between;padding:20px 42px;border-bottom:1px solid var(--line);background:#f9f9f3;gap:14px}.breadcrumb{font-size:12px;color:var(--muted)}.breadcrumb strong{color:var(--ink);font-weight:500}.timer{display:flex;gap:9px;align-items:center;font-size:12px}.timer-time{font-size:16px;letter-spacing:1px}.timer button{padding:4px 9px;font-size:12px}.main{max-width:1320px;margin:auto;padding:32px 42px 40px}.heading{display:flex;justify-content:space-between;align-items:end;gap:16px;margin-bottom:26px}.heading p{font-size:13px;color:var(--muted);margin-top:7px}.badge{display:inline-block;font-size:11px;line-height:1.6;background:var(--soft);padding:4px 9px;border-radius:6px;color:#60704e;white-space:nowrap}.badge.orange{background:#faeddf;color:#ac6238}.hero{display:grid;grid-template-columns:1.5fr 1fr;background:var(--green);color:#fff;border-radius:21px;padding:32px 35px;gap:30px;position:relative;overflow:hidden;margin-bottom:22px}.hero h2{font-size:30px;letter-spacing:-.6px;margin:10px 0 13px}.hero p{font-size:13px;color:#d3e0d3;max-width:490px}.hero .eyebrow{color:#b9cca3}.hero button{background:var(--lime);color:#29412b;border-color:var(--lime);font-size:13px;font-weight:600;margin-top:23px}.hero small{color:#c9d7c0;margin-left:14px;font-size:11px}.hero-map{display:flex;align-items:center;justify-content:center;gap:13px;position:relative}.orbit{width:160px;height:160px;border:1px solid #71876a;border-radius:50%;display:flex;align-items:center;justify-content:center;position:relative}.orbit:before{content:'';position:absolute;width:205px;height:205px;border:1px dashed #647e62;border-radius:50%}.orbit .big{font-size:49px;line-height:1.2;font-weight:300;font-family:Georgia,serif;color:var(--lime)}.orbit .tiny{color:#cad6c1;text-align:center}.orbit-tag{position:absolute;font-size:10px;padding:4px 9px;border-radius:5px;background:#42604b;color:#e5ecd5;z-index:1;white-space:nowrap}.orbit-tag.one{top:5px;left:-41px}.orbit-tag.two{right:-45px;top:83px}.orbit-tag.three{bottom:-9px;left:-24px}.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:28px}.stat{background:var(--paper);border:1px solid var(--line);border-radius:13px;padding:17px 20px}.stat-label{font-size:11px;color:var(--muted)}.stat-value{font-size:29px;font-weight:600;line-height:1.4;margin-top:5px}.stat-value span{font-size:12px;font-weight:400;color:var(--muted);margin-left:5px}.stat-foot{font-size:10px;color:#869078;margin-top:7px}.two-col{display:grid;grid-template-columns:1.6fr 1fr;gap:22px;align-items:start}.panel{background:var(--paper);border:1px solid var(--line);border-radius:var(--radius);padding:24px}.panel-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:18px;gap:10px}.panel-head h2{font-size:17px}.tabs{display:flex;gap:6px;flex-wrap:wrap}.tabs button{padding:6px 13px;font-size:12px}.task{display:flex;gap:13px;padding:17px 0;border-bottom:1px solid var(--line);align-items:start}.task:last-child{border-bottom:0}.task input{margin-top:6px;accent-color:var(--green);width:16px;height:16px;flex-shrink:0}.task-body{flex:1}.task-title{font-size:14px;font-weight:600}.task-title.done{text-decoration:line-through;color:var(--muted)}.task-time{font-size:11px;color:var(--orange);margin-bottom:2px}.task p{font-size:12px;color:var(--muted);margin-top:5px}.task-go{font-size:16px;border:0;padding:2px 8px;background:transparent}.focus-card{padding:18px 0;border-bottom:1px solid var(--line);display:flex;gap:13px}.focus-card:last-child{border:0}.focus-number{font:22px Georgia,serif;color:#a5b08e;line-height:1.4}.focus-card b{font-size:13px}.focus-card p{font-size:11px;color:var(--muted);margin-top:4px}.progress{height:5px;background:#e9eddf;border-radius:10px;overflow:hidden;margin:10px 0}.progress>span{display:block;height:100%;background:#6c8c53;transition:width .3s}.footer{margin-top:28px;font-size:11px;color:#8a9384;display:flex;justify-content:space-between;gap:12px}.notice{background:#eef1e3;padding:13px 17px;border-radius:11px;font-size:12px;color:#667253;margin-bottom:20px}.notice.warn{background:#fbede0;color:#9c633a}.toolbar{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-bottom:19px}.toolbar select,.toolbar input{background:var(--paper);border:1px solid var(--line);border-radius:9px;padding:9px 12px;min-width:120px;color:var(--ink)}.toolbar input{flex:1;max-width:370px}.notes-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}.note-card{background:var(--paper);border:1px solid var(--line);border-radius:15px;padding:23px}.note-card h3{margin:10px 0 14px}.note-card p{font-size:13px;line-height:1.9}.note-tip{background:#f2f3e9;border-left:3px solid #a9bb84;margin-top:16px;padding:10px 13px;font-size:12px;color:#66734e}.note-trap{font-size:12px;color:#a96540;margin-top:15px}.note-actions{display:flex;justify-content:space-between;align-items:center;margin-top:20px}.note-actions .tiny{color:var(--muted)}.empty{padding:55px 20px;text-align:center;background:var(--paper);border:1px dashed var(--line);border-radius:15px}.empty h3{margin-bottom:9px}.quiz-wrap{max-width:850px;margin:auto}.quiz-meta{display:flex;justify-content:space-between;gap:15px;font-size:12px;color:var(--muted);margin-bottom:14px}.question-text{font-size:22px;line-height:1.7;margin:22px 0 25px}.options{display:flex;flex-direction:column;gap:12px}.option{display:flex;text-align:left;align-items:center;gap:15px;padding:15px 18px;border-radius:12px;width:100%;line-height:1.7}.option .letter{height:29px;width:29px;display:grid;place-items:center;flex-shrink:0;background:#f0f2e9;border-radius:7px;font:13px Consolas,monospace}.option.selected{border-color:#436b4d;background:#edf2e3}.option.correct{border-color:#739760;background:#edf4e6}.option.incorrect{border-color:#c47d68;background:#fbefea}.feedback{margin-top:22px;padding:18px;border-radius:12px;background:#edf3e5}.feedback.bad{background:#fcf0e8}.feedback b{font-size:14px}.feedback p{font-size:13px;margin-top:8px}.quiz-bottom{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-top:25px}.score-circle{width:125px;height:125px;border:7px solid var(--lime);border-radius:50%;display:flex;align-items:center;justify-content:center;flex-direction:column;margin:15px auto}.score-circle b{font-size:35px;line-height:1.3}.short-card{margin-bottom:18px}.short-card h3{margin:10px 0 18px}.answer-input{width:100%;min-height:130px;border:1px solid var(--line);border-radius:10px;background:#fbfcf6;color:var(--ink);padding:14px;resize:vertical;line-height:1.8}.answer-input:focus{border-color:#789268}.rubric{padding:15px 0 0}.rubric label{display:flex;gap:9px;font-size:13px;margin:9px 0}.rubric input{accent-color:var(--green);margin-top:6px}.rubric .tip{font-size:12px;color:var(--orange);margin-top:12px}.lab-types{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin-bottom:22px}.lab-types button{text-align:left;padding:14px 12px;font-size:12px}.lab-types span{display:block;font-size:20px;margin-bottom:4px}.lab-prompt{font-size:15px;line-height:1.9;margin:15px 0}.table-scroll{overflow:auto;margin:18px 0}table{border-collapse:collapse;width:100%;font-size:12px}th{font-weight:500;color:var(--muted);background:#f1f3e9}td,th{text-align:left;padding:11px 14px;border-bottom:1px solid var(--line);white-space:nowrap}.step-grid{display:flex;gap:8px;flex-wrap:wrap;margin:16px 0}.page-step{border:1px solid var(--line);border-radius:8px;padding:8px;text-align:center;min-width:47px}.page-step.fault{border-color:#e2ba99;background:#fbf1e4}.page-step .frame{padding:3px 8px;border-top:1px solid var(--line);font-size:13px}.page-step small{font-size:10px;color:var(--muted)}.gantt{display:flex;overflow:auto;gap:3px;margin:20px 0 26px;min-height:62px;padding-bottom:15px}.gantt-block{min-width:45px;flex-grow:1;background:#dfebd4;border-radius:5px;text-align:center;padding:8px 4px;position:relative;font-size:12px}.gantt-block:nth-child(2n){background:#ede9d7}.gantt-block small{position:absolute;bottom:-21px;left:0;color:var(--muted);font-size:10px}.gantt-block:last-child:after{content:attr(data-end);position:absolute;bottom:-21px;right:0;color:var(--muted);font-size:10px}.lab-answer{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-top:20px}.lab-answer input,.lab-answer select{border:1px solid var(--line);border-radius:9px;background:white;padding:10px 13px;width:220px}.solution{border-top:1px solid var(--line);margin-top:24px;padding-top:22px}.solution h3{margin-bottom:10px}.formula{padding:15px 20px;border-radius:10px;background:#f1f3e8;font:15px/1.9 Consolas,'Microsoft YaHei',monospace;margin:15px 0;overflow:auto}.bank-seq{font-size:13px;background:#f0f3e8;padding:10px 14px;border-radius:8px;margin:10px 0}.mock-section{margin-top:25px}.mock-q{padding:20px 0;border-bottom:1px solid var(--line)}.mock-q h3{font-size:15px;margin-bottom:13px}.mock-options{display:grid;grid-template-columns:1fr 1fr;gap:8px}.mock-options label{border:1px solid var(--line);padding:10px 12px;border-radius:8px;font-size:13px;cursor:pointer;display:flex;gap:9px}.mock-options label:has(input:checked){border-color:var(--green);background:#edf2e3}.mock-options input{accent-color:var(--green)}.exam-bar{position:sticky;top:0;z-index:10;background:#fffefaef;backdrop-filter:blur(8px);padding:14px 18px;border:1px solid var(--line);border-radius:12px;display:flex;gap:20px;align-items:center;justify-content:space-between;margin-bottom:22px}.exam-clock{font-size:22px;font-family:Consolas,monospace}.result-line{display:flex;gap:10px;justify-content:space-between;padding:9px 0;border-bottom:1px solid var(--line);font-size:13px}.settings{max-width:780px}.settings .panel{margin-bottom:18px}.settings p{font-size:13px}.sources li{margin:12px 0;font-size:13px}.danger{color:var(--danger)}.toast{position:fixed;bottom:25px;left:50%;transform:translateX(-50%);background:#233d30;color:white;border-radius:10px;padding:12px 23px;z-index:100;box-shadow:0 6px 25px #263c3533;font-size:13px}.print-only{display:none}.mobile-brand{display:none}.tag-row{display:flex;gap:7px;flex-wrap:wrap}.spaced{margin-top:18px}.center{text-align:center}.hidden{display:none!important}.weak-list{display:grid;grid-template-columns:1fr 1fr;gap:14px}.weak-item{background:var(--paper);border:1px solid var(--line);padding:18px;border-radius:12px}.weak-item p{font-size:12px;color:var(--muted)}
+@media(min-width:1500px){.main{padding-top:40px}.hero{padding:38px 42px}.hero h2{font-size:35px}}
+@media(max-width:1100px){.sidebar{width:205px;padding:28px 14px}.workspace{margin-left:205px;width:calc(100% - 205px)}.main{padding:26px}.topbar{padding:17px 26px}.two-col{grid-template-columns:1fr}.hero{grid-template-columns:1.5fr 1fr;padding:28px}.hero h2{font-size:27px}.hero-map{transform:scale(.85)}.stat{padding:15px}.stats{gap:10px}.lab-types button{padding:12px 8px}}
+@media(max-width:760px){.sidebar{position:static;width:auto;display:block;padding:16px 14px;border-right:0;border-bottom:1px solid var(--line)}.brand{margin:0 0 14px 4px}.brand b{font-size:17px}.brand-icon{width:32px;height:35px;font-size:19px}.brand span{font-size:9px}.side-footer,.nav-label{display:none}.nav{display:flex;flex-direction:row;overflow:auto;gap:5px;padding-bottom:3px}.nav button{white-space:nowrap;font-size:12px;padding:8px 12px;gap:5px}.nav .icon{font-size:14px;width:auto}.nav .count{display:none}.app{display:block}.workspace{margin-left:0;width:100%}.topbar{padding:12px 18px}.main{padding:23px 18px}.heading{margin-bottom:20px;align-items:start}h1{font-size:25px}.heading p{font-size:12px}.hero{grid-template-columns:1fr;padding:25px}.hero h2{font-size:25px}.hero-map{display:none}.hero small{display:block;margin:10px 0 0}.stats{grid-template-columns:1fr 1fr;gap:10px}.stat-value{font-size:26px}.notes-grid,.weak-list{grid-template-columns:1fr}.panel{padding:20px}.lab-types{grid-template-columns:repeat(3,1fr)}.question-text{font-size:19px;margin:20px 0}.quiz-bottom .tiny{max-width:130px}.footer{flex-direction:column}.mock-options{grid-template-columns:1fr}.exam-bar{gap:8px;font-size:12px}.toolbar input{max-width:none;min-width:180px}.option{padding:13px}.timer{gap:6px}.breadcrumb{font-size:10px}.gantt-block{min-width:43px}.hero p{line-height:1.8}.heading>.badge{display:none}.note-card{padding:20px}.lab-answer input,.lab-answer select{flex:1;min-width:130px}}
+@media print{body{background:white;color:black;font-size:11pt}.sidebar,.topbar,.toolbar,.footer,.note-actions,button,.no-print{display:none!important}.workspace{width:100%;margin:0}.main{padding:0}.notes-grid{display:block}.note-card,.panel{break-inside:avoid;border:1px solid #aaa;margin-bottom:12px;box-shadow:none}.note-card{padding:16px}.note-tip{padding:5px 10px}.heading h1{font-size:22pt}.print-only{display:block}.answer-input{border:1px solid #ccc}.hero{background:white;color:black}.hero p{color:black}}
+@media print{.note-answer.hidden{display:block!important}.note-card[hidden]{display:none!important}}
+</style></head>
+<body><div class="app"><aside class="sidebar"><div class="brand"><div class="brand-icon" aria-hidden="true">▥</div><div><b>两天冲刺</b><span>OS / 13180</span></div></div><div class="nav-label">学习工作台</div><nav class="nav" id="nav" aria-label="学习导航"></nav><div class="side-footer"><div class="side-note"><span class="side-dot"></span>先理解，再练习，再回忆。<p class="tiny" style="margin-top:10px">湖北自考本科 · 操作系统<br>2023 年版教材 · 八章覆盖</p></div></div></aside><div class="workspace"><header class="topbar"><div class="breadcrumb">学习工作台 <span style="margin:0 9px">/</span> <strong id="crumb">今日冲刺</strong></div><div class="timer"><span class="tiny muted">专注</span><span class="timer-time mono" id="focus-clock">25:00</span><button data-action="timer-toggle" id="timer-toggle">开始</button><button data-action="timer-reset" aria-label="重置专注计时">↻</button></div></header><main class="main"><div id="content"></div><footer class="footer"><span>13180 操作系统 · 原创练习，不代表官方试卷</span><span id="save-status">进度自动保存在此浏览器</span></footer><noscript>请启用JavaScript后使用互动练习。本文件不需要联网或安装依赖。</noscript></main></div></div><script>const CHAPTERS=['操作系统概论','运行环境与运行机制','进程 / 线程模型','进程 / 线程调度','存储管理','文件系统','设备管理','进程同步与死锁'];
+// 原创讲解与练习；章节顺序参照指定教材的出版社目录。
+const CARDS=[
+[0,'操作系统到底管什么？','操作系统是管理计算机硬件、软件资源，并为用户和应用程序提供服务的系统软件。','处理机、存储器、文件、设备；再加用户接口。','把操作系统想成图书馆管理员：安排谁用座位、书放哪、谁能借书。'],
+[0,'并发与并行','并发：同一时间间隔内多个活动交替推进。并行：同一时刻多个活动同时执行。','单核也能并发；真正的同时执行需要多个执行单元。','一位厨师交替炒两道菜是并发；两位厨师各炒一道是并行。'],
+[0,'批处理、分时与实时','批处理侧重吞吐率；分时通过时间片提供交互；实时要求在规定时间内响应与完成。','实时强调时间约束，不只是平均速度快。','工资批量结算 / 多用户终端 / 飞行控制。'],
+[0,'内核结构与系统启动','宏内核将较多服务置于内核；微内核只保留较少核心功能，其他服务可运行于用户态。启动通常经历固件、引导程序、内核初始化、用户环境。','微内核的隔离性、可扩展性较好，但通信可能有额外开销。','结构题从性能、可靠性、维护扩展三个角度比较。'],
+[1,'用户态、内核态与特权指令','处理器状态区分执行权限；I/O控制、修改关键控制寄存器等操作需要特权。普通应用通过系统调用请求内核服务。','用户态进入内核态可由系统调用、异常或中断触发。','应用是顾客，系统调用是服务窗口，内核才有后台钥匙。'],
+[1,'中断、异常与系统调用','外部中断通常由外设、时钟等异步事件触发；异常通常源于当前指令执行；系统调用是程序主动请求操作系统服务的受控入口。','发生中断不等于一定切换进程；权限切换也不等于进程切换。','先保存现场，再处理中断，最后恢复合适的执行现场。'],
+[1,'存储层次与局部性','寄存器、Cache、主存、外存构成存储层次。时间局部性指刚访问的内容很可能再访问；空间局部性指邻近地址很可能被访问。','层次越靠近CPU，通常越快、越贵、容量越小。','循环反复用同一变量：时间局部性；顺序遍历数组：空间局部性。'],
+[1,'程序查询、中断与DMA','查询方式由CPU反复检查状态；中断方式由设备就绪时通知CPU；DMA由控制器在内存与设备之间完成成块传送。','DMA仍需要CPU做初始化、处理完成事件；不是CPU完全不参与。','从“CPU全程盯着”到“通知再处理”到“委托搬运”。'],
+[2,'程序与进程、PCB','程序是静态指令集合；进程是程序的一次执行活动，是资源分配的基本单位之一。PCB记录标识、状态、现场、调度与资源信息。','PCB是操作系统管理和识别进程的重要数据结构。','同一程序可对应多个进程；进程具有动态性。'],
+[2,'进程三态转换','就绪：除CPU外运行条件已具备；运行：占有CPU；阻塞：等待事件。就绪→运行由调度触发；运行→阻塞由等待事件触发；阻塞→就绪由事件完成触发。','阻塞不能在基本三态模型中直接变运行；就绪通常不能直接变阻塞。','醒了先排队，轮到再工作。'],
+[2,'进程与线程','进程是资源拥有和保护的单位；线程是CPU调度和执行的基本单位。同进程线程共享地址空间等资源，各自保留程序计数器、寄存器和栈。','线程有自己的栈；共享资源也意味着需要同步。','同一办公室共享文件柜，每个人有自己的工作进度。'],
+[2,'用户级线程与内核级线程','用户级线程由用户态库管理；内核级线程由内核感知和调度。多对一模型中，一个阻塞系统调用可能使整个进程阻塞。','模型很重要：不要把多对一的限制说成所有线程实现的限制。','用户级切换开销小；内核级支持更直接的多核并行。'],
+[3,'三个时间指标','周转时间T=完成时刻−到达时刻；带权周转时间W=T/服务时间；等待时间=周转时间−CPU服务时间（本练习无I/O）；响应时间=首次运行−到达。','时刻与时长分清；先画甘特图，再计算。','服务时间2，等3后完成：T=5，W=2.5。'],
+[3,'FCFS、SJF与SRTF','FCFS按到达顺序；非抢占SJF从就绪队列选择服务时间最短者；SRTF按剩余时间抢占。','SJF只比较已经到达的进程，不能等未来的短进程而无故空转。','FCFS可能有护航效应；SJF可能使长作业饥饿。'],
+[3,'时间片轮转RR','就绪进程依次获得一个时间片，未完成则排到队尾。时间片很大时趋近FCFS；很小则响应较快但切换开销增加。','队列按到达与回队规则演化；题目边界时刻的约定要看清。','一次只跑一小段，排队轮流来。'],
+[3,'优先级、反馈队列与实时','优先级调度可能引起饥饿，可用老化缓解。多级反馈队列允许进程在不同队列间移动。EDF按最早截止期优先；RM通常将短周期任务赋予较高固定优先级。','硬实时要求严格满足截止期；软实时允许有限违约但性能下降。','低优先级长期拿不到CPU叫饥饿；不必形成死锁。'],
+[4,'连续分配与碎片','固定分区可能存在内部碎片；可变分区产生分散空闲区，存在外部碎片。首次适应找首个足够大空闲区；最佳适应找最小够用区；最坏适应找最大区。','内部：分给你却没用完；外部：空闲但不连续。','紧凑可合并外部碎片，需要相应地址重定位支持。'],
+[4,'分页地址转换','页号p=⌊逻辑地址A/页大小S⌋；页内偏移d=A mod S；查页表得页框f；物理地址=f×S+d。','分页前后页内偏移不变。若逻辑页数越界或页未驻留，不能直接套公式。','1 KiB=1024 B；本页所有地址题均按字节编址。'],
+[4,'虚拟内存与缺页','虚拟内存利用局部性，仅将所需部分装入主存。访问合法但未驻留页面时产生缺页异常，操作系统调入页面，必要时置换，再重新执行。','虚拟内存不等于物理内存无限；还受地址位数、外存与实现限制。','页表项通常含页框号、存在位、访问位、修改位等。'],
+[4,'FIFO、LRU、OPT与抖动','FIFO换最早装入页；LRU换过去最久未访问页；OPT换未来最晚再访问页。抖动是频繁缺页换入换出使有效执行时间大幅下降。','FIFO命中不改装入顺序；LRU命中要更新最近访问记录；FIFO可能出现Belady异常。','缺页次数包含最初空页框的装入；有空位先填空位。'],
+[5,'逻辑结构与物理结构','逻辑结构面向用户，可分为字节流等无结构文件与记录式等有结构文件；物理结构描述文件在外存的组织方式，如连续、链接、索引分配。','用户看到的组织与磁盘存放方式分开答。','同一个字节流文件可以用不同物理分配方式保存。'],
+[5,'连续、链接与索引分配','连续分配便于顺序和随机访问，但扩展困难、可能有外部碎片；链接分配扩展方便但普通链式随机访问较慢；索引分配用索引表定位数据块。','索引块也占空间；FAT把链接信息集中到表中。','比较题从随机访问、增长、碎片、额外空间四点答。'],
+[5,'目录、FCB与inode','目录用于按名查找文件。FCB保存文件管理信息；类UNIX系统的inode记录类型、权限、大小、数据块位置等元数据；目录项建立名字到inode的联系。','文件名通常在目录项中，而非inode本体。','路径解析：逐级查目录，定位元数据，再找数据块。'],
+[5,'空闲空间、共享与保护','位示图用位标识磁盘块使用状态；也可用空闲链表等管理。文件保护通过权限、访问控制表等限制访问；共享时需考虑一致性和并发访问。','题目须说明位0/位1代表空闲还是已分配，不能想当然。','硬链接通常共享同一inode；符号链接保存目标路径。'],
+[6,'设备分类与软件层次','按传输单位可分字符设备和块设备；设备独立性使应用尽量用统一接口和逻辑设备名。设备驱动负责与特定控制器交互。','应用接口、设备独立软件、驱动、中断处理各有职责。','新增设备时主要替换对应驱动，减少应用改动。'],
+[6,'缓冲与I/O效率','缓冲协调生产与消费速度、传输粒度差异，支持I/O与计算重叠。双缓冲允许一块传输时另一块处理。','缓冲不是永久保存；Cache侧重复用，缓冲侧重协调传送。','不要把增加缓冲说成必然提升所有负载的性能。'],
+[6,'磁盘调度','FCFS按请求顺序；SSTF找离当前最近请求；SCAN向一个方向服务到磁盘端点再反向；LOOK到该方向最远请求就反向。','SCAN≠LOOK；总移动量=各段磁道距离绝对值之和。','本练习SCAN明确给出磁道范围和初始方向，并只统计到最后请求完成。'],
+[6,'SPOOLing与虚拟设备','SPOOLing借助磁盘缓冲和后台进程，把对独占设备的访问转化为对共享队列的访问，典型如打印。','共享的是排队使用的逻辑接口；物理打印机仍按顺序打印。','多个用户同时提交打印任务，后台依次输出。'],
+[7,'互斥、同步与临界区','互斥限制同一资源同时被访问；同步约束活动先后。临界区是访问共享资源的代码段。常用要求：空闲让进、忙则等待、有限等待、让权等待。','共享变量本身不是临界区；访问共享变量的那段代码才是。','抢一台打印机是互斥；必须先生产后消费是同步。'],
+[7,'P/V与生产者消费者','采用可为负的记录型信号量：P先减1，结果<0则阻塞；V先加1，结果≤0则唤醒一个等待者。互斥量mutex=1，empty=N，full=0。','生产：P(empty)→P(mutex)→放入→V(mutex)→V(full)。消费与之对称。','先申请空位/产品，再进入临界区；不要持有mutex等待空位。'],
+[7,'死锁四条件与应对','互斥、占有并等待、不可剥夺、循环等待是死锁必要条件。预防通过破坏某个必要条件；避免通过安全性判断；检测与解除允许先发生再处理。','不安全状态不一定已死锁；安全状态一定不死锁。','资源按统一顺序申请可破坏循环等待。'],
+[7,'银行家算法','Need=Max−Allocation。Work=Available；找未完成且Need≤Work的进程，假定完成并令Work+=Allocation。能完成全部则存在安全序列。','比较向量须每一维都≤；释放的是Allocation，不是Max或Need。','新请求先检查Request≤Need且Request≤Available，再试分配并检验安全性。']
+].map((c,i)=>({id:i,ch:c[0],title:c[1],body:c[2],trap:c[3],tip:c[4]}));
+const RAW_QUESTIONS=[
+[0,'操作系统属于哪一类软件？',['应用软件','系统软件','数据库中的数据','编译生成的目标代码'],1,'操作系统管理系统资源并提供运行环境，属于系统软件。'],
+[0,'单处理器通过交替执行多个进程体现的是？',['并行','并发','只能串行无并发','物理上同时执行'],1,'并发关注一段时间内多个活动推进，不要求同一时刻同时运行。'],
+[0,'分时系统实现交互的重要技术是？',['时间片轮转','只允许一个用户','永不发生中断','禁止抢占'],0,'轮流分配CPU时间片使多个用户感到系统在及时响应。'],
+[0,'实时系统最强调什么？',['磁盘容量','用户数最多','在规定时间内完成响应或任务','平均吞吐率一定最高'],2,'实时性的核心是时间约束与截止期。'],
+[0,'下列哪项通常不属于操作系统的核心资源管理任务？',['处理机管理','存储管理','文件管理','设计业务销售策略'],3,'销售策略是应用领域的业务任务。'],
+[0,'批处理系统一般更关注？',['吞吐率和资源利用率','每次键盘输入的即时响应','美观界面','所有任务截止期完全相同'],0,'批处理组织一批作业连续处理，强调吞吐与利用率。'],
+[0,'相较宏内核，微内核的典型思路是？',['所有服务都放内核','减少内核核心功能，部分服务在用户态','取消进程间通信','完全不需要硬件'],1,'微内核保留较少核心机制，把更多服务移至用户态。'],
+[0,'典型启动顺序中，哪项正确？',['应用→固件→内核','内核→固件→引导','固件→引导程序→内核初始化','目录→线程→固件'],2,'固件完成早期初始化，再由引导程序加载内核。'],
+[1,'普通应用请求内核服务的受控接口是？',['直接改控制寄存器','系统调用','随意执行特权指令','修改时钟硬件'],1,'系统调用以受控方式进入内核执行服务。'],
+[1,'时钟产生的事件通常属于？',['外部中断','除零异常','普通函数调用','语法错误'],0,'时钟中断相对于当前指令是外部异步事件。'],
+[1,'下列关于中断的说法正确的是？',['每次中断一定更换进程','中断后不能返回','中断可能仅处理事件后返回原进程','只在程序结束时发生'],2,'处理中断与进程调度是不同概念。'],
+[1,'顺序遍历数组主要体现？',['空间局部性','不存在局部性','死锁','地址越界'],0,'连续访问相邻数据体现空间局部性。'],
+[1,'DMA最直接减少了哪项工作？',['CPU对每个数据单位的搬运干预','全部中断','设备控制器数量','所有内存访问'],0,'DMA控制器负责成块传送，CPU通常参与初始化与完成处理。'],
+[1,'通常只能在内核态执行的是？',['整数加法','访问自身合法变量','直接控制I/O设备的特权操作','比较两个数'],2,'直接控制硬件与关键系统状态的指令通常受权限保护。'],
+[1,'反复检查设备状态直到完成的I/O方式是？',['DMA','程序查询','SPOOLing','虚拟分页'],1,'程序查询又称轮询，CPU主动反复查看状态。'],
+[1,'下列哪项正确？',['所有函数调用都是系统调用','系统调用通常需要受控的权限切换','切换内核态必定切换进程','用户程序可任意关闭中断'],1,'普通库函数可完全在用户态执行；权限切换并不必然换进程。'],
+[2,'PCB主要用于？',['保存文件正文','描述与管理进程','记录磁盘物理温度','替代全部内存'],1,'PCB含进程状态、标识、处理机现场与资源管理信息。'],
+[2,'进程等待读取磁盘完成时通常处于？',['运行态','就绪态','阻塞态','已终止且无法恢复'],2,'等待I/O事件期间即使CPU空闲也不能直接运行，属于阻塞。'],
+[2,'基本三态模型中，I/O完成通常使进程？',['阻塞→就绪','阻塞→运行','就绪→阻塞','运行→创建'],0,'事件完成只使其具备运行条件，仍需等待调度。'],
+[2,'同一进程内不同线程一般各自拥有？',['整个独立地址空间','自己的栈和寄存器现场','完全独立的代码文件','不同的进程号作为独立进程'],1,'线程共享进程资源，但拥有各自执行上下文。'],
+[2,'关于程序与进程，正确的是？',['程序是动态活动，进程是静态文件','一个程序只能有一个进程','进程是程序的一次执行活动','两者完全一样'],2,'程序是静态指令集合，运行实例形成进程。'],
+[2,'CPU时间片用完后，未完成进程通常发生？',['运行→就绪','阻塞→就绪','就绪→终止','运行→永久阻塞'],0,'被抢占后回到就绪队列，等待再次分配CPU。'],
+[2,'多对一用户级线程模型的典型限制是？',['同一进程可在多个CPU上真正同时运行多个线程','一个阻塞系统调用可能阻塞整个进程','不需要线程栈','内核逐个调度全部用户线程'],1,'内核只看到一个调度实体，因此阻塞可能影响整个进程。'],
+[2,'进程上下文切换必须保存和恢复的典型信息是？',['所有磁盘文件完整内容','程序计数器和寄存器等现场','显示器尺寸','键盘品牌'],1,'上下文保证进程之后能从正确位置继续执行。'],
+[3,'某进程到达时刻2，完成时刻10，服务时间4，带权周转时间是？',['2','4','8','10'],0,'周转=10−2=8，带权周转=8/4=2。'],
+[3,'非抢占SJF每次应该从哪里选择最短作业？',['所有未来作业','当前已就绪的作业','阻塞队列','已完成队列'],1,'算法不能提前执行尚未到达的作业。'],
+[3,'RR的时间片大到每个进程一次都能完成时，趋近于？',['FCFS','SRTF','EDF','银行家算法'],0,'每个进程按就绪队列顺序一次完成，行为趋近先来先服务。'],
+[3,'用逐步提高等待进程优先级缓解饥饿，称为？',['老化','缺页','紧凑','DMA'],0,'老化使等待较久的进程逐渐有机会得到服务。'],
+[3,'服务时间相同，周转时间越短则带权周转时间？',['越大','越小','一定为1','不变'],1,'带权周转=T/服务时间，分母相同时随T一起减小。'],
+[3,'SRTF选择依据是？',['原始总服务时间最大','剩余服务时间最短','到达最晚','进程号最小且不看其他条件'],1,'最短剩余时间优先是可抢占的短作业策略。'],
+[3,'首次开始执行时刻减到达时刻得到？',['周转时间','响应时间','带权周转时间','吞吐率'],1,'响应时间反映从提交到首次获得服务的等待。'],
+[3,'EDF实时调度优先选择？',['截止期最早的就绪任务','截止期最晚的任务','文件最大的任务','内存最多的任务'],0,'EDF即Earliest Deadline First。'],
+[4,'按字节编址，页大小1024B，逻辑地址2500的页号和偏移是？',['2和452','2和500','3和452','1和1476'],0,'2500=2×1024+452，页号从0开始。'],
+[4,'按字节编址，页大小1024B，逻辑地址2500所在页映射至页框5，物理地址是多少？',['2500','5120','5572','5452'],2,'2500=2×1024+452。物理地址=5×1024+452=5572。'],
+[4,'分页管理中通常可能存在的碎片是？',['最后一页中的内部碎片','必须连续才形成的外部碎片','完全没有浪费','只存在磁道碎片'],0,'最后一页可能未用满，属于内部碎片。'],
+[4,'FIFO命中已有页面后，通常应？',['把它变成最新装入','保持装入先后顺序不变','立即换出','增加一次缺页'],1,'FIFO依据装入时间，命中不改变其装入先后。'],
+[4,'LRU选择淘汰？',['最早装入的页面','最近一次访问距今最久的页面','未来最早访问的页面','页号最大的页面'],1,'LRU依据过去的访问历史，区别于FIFO和OPT。'],
+[4,'访问合法但不在主存的页面，通常触发？',['缺页异常','立刻永久终止所有进程','语法分析','磁盘格式化'],0,'由缺页处理调入所需页，必要时选择淘汰页。'],
+[4,'频繁换页使实际执行效率很低的现象是？',['抖动','并行','硬链接','预读成功'],0,'工作集需求超出可用页框等情况可能导致抖动。'],
+[4,'空闲区按地址顺序为100、500、200KB；申请180KB，首次适应选？',['100KB','500KB','200KB','无法分配'],1,'首次适应选择按扫描顺序遇到的第一个足够大的区。'],
+[5,'方便随机访问，但要求文件占用连续磁盘块的方式是？',['连续分配','普通链式分配','空闲链表','SPOOLing'],0,'连续分配可通过起始块号与偏移直接计算位置。'],
+[5,'普通链式文件分配的典型不足是？',['不能扩展','随机访问需沿链查找','每个文件必须连续','无法顺序访问'],1,'普通链接分配需沿指针逐块寻找，随机定位较慢。'],
+[5,'类UNIX目录项通常建立什么联系？',['文件名→inode号','磁道→时钟','CPU→页大小','线程→打印纸'],0,'目录负责名称到元数据标识的映射。'],
+[5,'用位标识磁盘块占用状态的方法叫？',['位示图','时间片','信号量','中断向量'],0,'位示图管理空闲空间，具体0/1含义由题目约定。'],
+[5,'索引分配方式通常需要额外保存？',['索引块或索引表','CPU调度时间片','用户密码明文','所有文件的连续副本'],0,'索引保存数据块位置，本身也有存储开销。'],
+[5,'文件访问权限控制主要服务于？',['文件保护','进程抢占','页置换','时钟校准'],0,'权限约束主体对文件的读、写、执行等操作。'],
+[5,'文件的逻辑结构主要从哪一视角描述？',['用户如何组织和访问内容','磁盘磁头机械结构','CPU电路','硬盘品牌'],0,'逻辑结构与物理分配结构是不同层次。'],
+[5,'通常保存目标路径的链接类型是？',['符号链接','硬链接','页表项','DMA描述符'],0,'符号链接记录目标路径；硬链接通常指向同一个inode。'],
+[6,'SSTF选择下一个磁盘请求的依据是？',['请求最早','距当前磁头最近','磁道号最大','文件名最短'],1,'Shortest Seek Time First近似按最近磁道距离选择。'],
+[6,'磁头50依次服务10、70，总移动量是多少？',['60','80','100','120'],2,'|50−10|+|10−70|=40+60=100。'],
+[6,'SCAN与LOOK的重要区别是？',['LOOK总到物理端点','SCAN通常到端点再反向，LOOK到最远请求反向','两者完全相同','SCAN不需要方向'],1,'必须根据题目明确的端点与统计范围计算。'],
+[6,'打印机SPOOLing主要使用哪种资源作为排队缓冲？',['磁盘','CPU寄存器','只用键盘','只用显存'],0,'磁盘保存输入输出队列，后台进程调度独占设备。'],
+[6,'设备独立性的主要目的之一是？',['让应用尽量不依赖特定设备细节','所有设备速度一样','禁止安装驱动','取消设备名'],0,'统一接口与逻辑设备名有助于屏蔽具体设备差异。'],
+[6,'双缓冲的典型作用是？',['支持一块缓冲传输时处理另一块','消除所有中断','让磁盘没有延迟','强制串行'],0,'双缓冲支持计算与I/O传输重叠，提高流水效率。'],
+[6,'通常按固定大小数据块传输的是？',['块设备','所有字符设备','显示字体','所有线程'],0,'磁盘是典型块设备；键盘等常作为字符设备。'],
+[6,'设备驱动程序主要负责？',['实现与特定设备控制器交互','规划业务报表','替代文件全部内容','设置所有进程的虚拟地址'],0,'驱动屏蔽具体硬件控制细节，并与上层接口协作。'],
+[7,'下列哪项不属于死锁的必要条件？',['互斥','循环等待','占有并等待','时间片过大'],3,'死锁四条件还包括不可剥夺，时间片大小不是必要条件。'],
+[7,'以下关于不安全状态正确的是？',['必定已经死锁','一定安全','不一定已经死锁','任何进程都已终止'],2,'不安全指无法保证所有进程按声明最大需求顺利完成。'],
+[7,'N个缓冲槽的生产者消费者问题，empty与full初值是？',['0与N','N与0','1与1','N与N'],1,'empty数空槽，full数已有产品，初始缓冲区为空。'],
+[7,'生产者为什么通常先P(empty)，再P(mutex)？',['避免持有互斥锁等待空槽而阻碍消费者','因为P顺序随意','因为不需互斥','为了永远占有CPU'],0,'若缓冲区满，持有mutex再等empty会阻止消费者取走产品。'],
+[7,'银行家安全性检查中，假定某进程完成后Work增加？',['Max','Need','Allocation','Request的平方'],2,'完成后释放该进程已分配的资源Allocation。'],
+[7,'把所有资源统一编号并按序申请，主要破坏？',['循环等待','所有互斥','时间局部性','中断'],0,'统一资源顺序使资源等待关系无法形成循环。'],
+[7,'记录型信号量S初值2，连续三个P且无V，S为多少、阻塞几个？',['0和0','−1和1','1和3','−3和2'],1,'采用先减1再判断的记录型定义：2→1→0→−1，第三个阻塞。'],
+[7,'“消费者必须等待产品已经产生”属于？',['同步关系','仅仅互斥且没有先后','空间局部性','磁盘调度'],0,'同步描述协作活动间的先后约束。']
+];
+const QUESTIONS=RAW_QUESTIONS.map((q,i)=>({id:'q'+i,ch:q[0],q:q[1],options:q[2],answer:q[3],explain:q[4]}));
+const SHORTS=[
+[0,'简述操作系统的作用和主要管理功能。',['管理硬件与软件资源','为用户和应用程序提供服务或接口','处理机管理','存储管理','文件与设备管理'],'先定义，再分条列功能；每条配一句具体对象。'],
+[0,'比较批处理、分时、实时系统的目标。',['批处理重吞吐和资源利用率','分时重交互和响应','分时使用时间片','实时有明确时间约束或截止期'],'实时不能只答“速度快”。'],
+[1,'说明系统调用与普通函数调用的区别。',['系统调用请求内核服务','通过受控入口进入内核态','普通函数调用可在用户态完成','系统调用涉及权限与保护检查'],'先说服务提供者，再说执行机制。'],
+[1,'比较查询、中断、DMA三种I/O控制方式。',['查询由CPU反复检查状态','中断由设备通知CPU处理','DMA由控制器完成成块传输','CPU仍需初始化DMA及处理完成'],'从CPU参与程度比较，别写DMA完全不需要CPU。'],
+[2,'说明进程三态及典型转换。',['运行态占有CPU','就绪态具备条件等待CPU','阻塞态等待事件','调度使就绪变运行','等待事件使运行变阻塞','事件完成使阻塞变就绪'],'可以画三态箭头图；不要画阻塞直接到运行。'],
+[2,'比较进程与线程。',['进程是资源拥有或分配的单位','线程是调度和执行的单位','同进程线程共享地址空间等资源','线程各自保留栈和寄存器现场','线程切换通常开销较小但共享数据需同步'],'按资源、调度、共享、开销四个角度展开。'],
+[3,'比较FCFS、SJF与RR的特点。',['FCFS按到达顺序且可能护航','SJF选当前就绪中服务时间最短者','SJF可能使长任务饥饿','RR按时间片轮流执行','时间片过小切换开销大、过大趋近FCFS'],'说明选择规则后，再写优缺点。'],
+[3,'什么是饥饿？如何缓解？',['长期得不到所需资源或CPU','优先级低或长作业可能受影响','老化提高长等待者优先级','改善公平性或采用适当轮转'],'饥饿不要求形成循环等待。'],
+[4,'说明缺页异常的基本处理过程。',['访问合法但未驻留页面产生缺页','保存现场并进入缺页处理','有空闲页框则分配、否则选择淘汰页','脏页必要时写回','从外存调入目标页并更新页表或TLB','恢复并重执行引发缺页的指令'],'按发生→选框→调页→更新→恢复写顺序。'],
+[4,'比较FIFO、LRU与OPT页面置换。',['FIFO淘汰最早装入页','LRU淘汰过去最久未访问页','OPT淘汰未来最晚再访问页','OPT需要未来信息、用作理想比较','FIFO可能有Belady异常'],'关键词：装入、过去、未来。'],
+[5,'比较连续、链接、索引文件分配。',['连续分配便于随机访问但扩展困难','连续分配可能有外部碎片','链接分配易扩展但普通链式随机访问慢','索引分配由索引定位数据块','索引需要额外空间'],'把随机访问、扩展和开销写完整。'],
+[5,'说明目录、FCB或inode的作用。',['目录实现按名查找','目录项联系文件名与标识','FCB或inode保存文件管理信息','管理信息包含权限、大小、数据块位置等','文件元数据与文件正文不同'],'类UNIX的文件名通常在目录项而非inode本体。'],
+[6,'解释SPOOLing及打印应用。',['以磁盘作为缓冲队列','后台进程组织输出','用户先提交打印任务','独占设备由后台依次服务','使多个用户可共享逻辑设备接口'],'写清磁盘排队与物理设备顺序服务。'],
+[6,'比较FCFS、SSTF、SCAN、LOOK磁盘调度。',['FCFS按请求顺序','SSTF选距当前最近请求且可能饥饿','SCAN沿方向服务到端点再反向','LOOK只到该方向最远请求再反向','总寻道移动量逐段距离相加'],'不要遗漏初始方向与磁盘边界。'],
+[7,'写出死锁四个必要条件并说明处理方法。',['互斥','占有并等待','不可剥夺','循环等待','预防破坏必要条件','避免维持安全状态','检测后解除'],'先列四条件，再写预防、避免、检测解除的差别。'],
+[7,'写出有界缓冲生产者消费者的信号量方案。',['mutex=1、empty=N、full=0','生产者先P(empty)再P(mutex)','放入后V(mutex)、V(full)','消费者先P(full)再P(mutex)','取出后V(mutex)、V(empty)','申请资源计数在互斥之前，避免持锁等待'],'完整写出初值与两侧顺序，P/V本身是原子操作。']
+].map((s,i)=>({id:'s'+i,ch:s[0],q:s[1],points:s[2],tip:s[3]}));
+const PLAN=[
+['第一天 · 建立骨架','09:00–10:00','先测再学','完成15题摸底。把不会的归到章节，先看概论与运行机制。','quiz'],
+['第一天 · 建立骨架','10:15–12:00','进程与调度','背三态、进程线程区别；手画FCFS、SJF、RR甘特图。','lab'],
+['第一天 · 建立骨架','14:00–16:00','存储管理','练地址转换、FIFO和LRU；每题都写页框变化，少心算。','lab'],
+['第一天 · 建立骨架','16:15–18:00','同步与死锁','背P/V顺序、四条件；亲手做银行家安全序列。','notes'],
+['第一天 · 建立骨架','19:30–21:00','闭卷复述与纠错','复述8道简答，完成32题选择；错题看懂后再做一次。','short'],
+['第二天 · 形成输出','09:00–10:30','文件与设备','比较文件分配，练磁盘调度；记住SCAN与LOOK边界。','notes'],
+['第二天 · 形成输出','10:45–12:00','扫完全部章节','补概论、运行机制和线程实现；过一轮32张速记卡。','notes'],
+['第二天 · 形成输出','14:00–15:30','90分钟自编模拟','按100分结构闭卷完成。主观题对照要点自评。','mock'],
+['第二天 · 形成输出','16:00–17:30','只补暴露的短板','错题重做；计算题换数据再算；把易错步骤写在纸上。','wrong'],
+['第二天 · 形成输出','19:00–20:30','最后一轮提取','合上答案复述简答、公式和P/V。随后整理考试用品并休息。','short']
+];
 
-<header data-page-node-id="HKZb8GQCggXedQLLoQXxfC">
-  <h1 data-page-node-id="bYhWdciiLKT49P33tQZruz">操作系统（13180）· 两天速成突击</h1>
-  <p data-page-node-id="w0FkbzeNkj2juh2Gg9xXF0">湖北自考本科 · 考前 48 小时应急方案 · 直接照做版</p>
-  <div class="badge-row" data-page-node-id="BwLBTORXMP4S526HpGHbpI">
-    <span class="badge" data-page-node-id="lLOFXc75ACr7FSqqRKKcS2">📖 先背清单</span>
-    <span class="badge" data-page-node-id="JB76fWzjauj7Sbhdm3tjHQ">✍️ 再刷题</span>
-    <span class="badge" data-page-node-id="O0ngCtMIGiWQ9Q0iwmfBB3">🌙 睡前总复盘</span>
-  </div>
-</header>
-
-<nav data-page-node-id="IDrZFgoa5GFvVVPKdh7oNm">
-  <button class="active" onclick="go(0,this)" data-page-node-id="KDrhGYvrPEfODCzCLrQYWB">📅 两天作战计划</button>
-  <button onclick="go(1,this)" data-page-node-id="KnoL3evZdOim899lHMmB9H">🧠 考点速览</button>
-  <button onclick="go(2,this)" data-page-node-id="S4KXSCRSSTUBrfyRqPV7pG">🔥 必背清单</button>
-  <button onclick="go(3,this)" data-page-node-id="G12P3fXPsJu9x2XVa1vFGr">✍️ 练习题</button>
-  <button onclick="go(4,this)" data-page-node-id="pNr7gpHemy5zMMOWZDJi9c">🚨 考场策略</button>
-</nav>
-
-<!-- ==================== 两天计划 ==================== -->
-<section class="active" data-page-node-id="5AAwGtrrWp2B07bzOZWwNd">
-  <div class="day-grid" data-page-node-id="L2rQTLZLaTXPKeXmxRuzD9">
-    <div class="day-card d1" data-page-node-id="CRJuwPEgpDPLLf1a4Glt5Y">
-      <h3 data-page-node-id="VguvxkUwyf43f5FwqvqI5b">📅 Day 1（考前第二天）</h3>
-      <div class="slot" data-page-node-id="FMQR9p95Yj2qMzvsQ9LjxT"><b data-page-node-id="G56tSAzB4ukjdXq74LKMUC">上午 09:00–11:30（2.5h）</b>
-        <ul data-page-node-id="vI6M89S7QOqJaac7iGywxO">
-          <li data-page-node-id="rKZwKwKbpgDBGMv0FNRj0s">用本页「考点速览」过一遍<b data-page-node-id="zgmENYJDREAUF7THJfZcu6">第1章 操作系统概述 + 第2章 进程管理</b></li>
-          <li data-page-node-id="PJiszDjCBBf00HlMeF2oP3">重点：进程三态、PV 操作、死锁四条件（抄一遍）</li>
-        </ul>
-      </div>
-      <div class="slot" data-page-node-id="8jvIbfIRHLxUGB9lD4OrdP"><b data-page-node-id="jdbkFFHufrHhpeVOcH26oT">下午 14:00–16:30（2.5h）</b>
-        <ul data-page-node-id="7OW7KB07MykKQypAxdy0E6">
-          <li data-page-node-id="FPuGZpAIT655P51r8P51Bm">过「<b data-page-node-id="7cXBcqF4AhrjbeBrFtx053">第3章 内存管理 + 第4章 文件管理</b>」速览</li>
-          <li data-page-node-id="U4Vbr1Joqz8LBW9t9vGRjg">动手算 2 道页式地址变换题（本页练习区有）</li>
-        </ul>
-      </div>
-      <div class="slot" data-page-node-id="3FV4FTKNlhoBbKC8JMOWY2"><b data-page-node-id="shJ2IYUkwwgLxSCuR0TxfY">晚上 19:30–22:00（2.5h）</b>
-        <ul data-page-node-id="TfazHI6S8SaGEBdPZDvCOw">
-          <li data-page-node-id="y4PwJtISW8E0YQYjoudvF6">过「<b data-page-node-id="R6egcwYlbE0itdlW1KZUbL">第5章 设备管理</b>」+ 磁盘调度算法</li>
-          <li data-page-node-id="qvPiq0X4SLzrwRStCEvGMP">把「必背清单」全部背第一遍（合上页面能复述）</li>
-        </ul>
-      </div>
-    </div>
-    <div class="day-card" data-page-node-id="JmQS2y7Q79cohwFKWWZG4K">
-      <h3 data-page-node-id="sDVqZXJDh4WutYRA2mmiIm">📅 Day 2（考前一天）</h3>
-      <div class="slot" data-page-node-id="tmL6U9KFWvmRaK4Rw52Q7G"><b data-page-node-id="25zJ6nxGIx6PatGBCpDMS3">上午 09:00–11:30（2.5h）</b>
-        <ul data-page-node-id="tVo4ba44ihtWJGRbYFwSQi">
-          <li data-page-node-id="ypOsApgSx21rnth4r3uVAE">刷本页<b data-page-node-id="Ds8J1jAX1duvo1baw9YNgv">全部练习题</b>，错题当场弄懂并标记</li>
-        </ul>
-      </div>
-      <div class="slot" data-page-node-id="VEfU7UFDUo61SK0sePjqjR"><b data-page-node-id="TBeMRScjh2xzvTIN9DF3VV">下午 14:00–16:30（2.5h）</b>
-        <ul data-page-node-id="2tHz7IFPWoG710fyGNOhPj">
-          <li data-page-node-id="2QSaKUchPDDlBDrr1gPnQy">只看<b data-page-node-id="hgFjbLQZ2IxVkMj23MtNZb">昨天做错的题</b> + 必背清单第二遍</li>
-          <li data-page-node-id="VaQ9M22pHhndM1t811yC5O">PV 操作、银行家算法再各做 1 道新的</li>
-        </ul>
-      </div>
-      <div class="slot" data-page-node-id="xNedUSCQ2obKTBtbEpCHWa"><b data-page-node-id="9UOkNrt2JOrnuBZjExaGak">晚上 19:30–21:00（1.5h）</b>
-        <ul data-page-node-id="O7l4Nzye8c14Q6etjJi4JF">
-          <li data-page-node-id="ENTwuzx94dd2tboHseN9WR">必背清单<b data-page-node-id="XwOUzYZELBhLElU7WjrxSf">最后一遍</b> + 考场策略读一遍</li>
-          <li data-page-node-id="y8ONDqRTDeWHAToCiX1kUc">21:00 后<b data-page-node-id="3ww7hbjTXy1i7lx2FZ8SvB">不学新东西</b>，早睡，准备好证件</li>
-        </ul>
-      </div>
-    </div>
-  </div>
-  <div class="warn" style="margin-top:16px" data-page-node-id="J13VHK6ml3ivvaB4JOfIJQ"><b data-page-node-id="XmFwuC15dciTXVFfF6EtLo">两天速成的核心原则：</b>不求全懂，只求"看到题能写、背过的不丢分"。每年真题里纯记忆性题目（选择/填空/判断）占比过半，把必背清单拿下就保住了底盘。</div>
-</section>
-
-<!-- ==================== 考点速览 ==================== -->
-<section data-page-node-id="1dtJIzpBmWN8LtacO7nQS0">
-  <div class="card" data-page-node-id="R08RvW80pXoiGUBiQhGbCp">
-    <h2 data-page-node-id="tjALSeaam9N5yGOg3bVP5c">第1章 操作系统概述</h2>
-    <ul data-page-node-id="mUzH14LcXisSHnjAIz6KUF">
-      <li data-page-node-id="SRLHYVbp75DnfhMFnrILqs"><b data-page-node-id="PIp7n43RfsftwVG6KrWhhE">操作系统定义</b>：管理计算机软硬件资源、控制程序执行、方便用户使用的系统软件。</li>
-      <li data-page-node-id="hX8YIscFA1NXhDw4AqpIMK"><b data-page-node-id="hN81oJCHNnEDyvHGrKG7G9">四大功能</b>：处理机管理、存储管理、设备管理、文件管理。</li>
-      <li data-page-node-id="fxhCylXHN6KypOhC5oUVHW"><b data-page-node-id="NH7Ftxrnhtp2BCj6kLneaX">四大特征</b>：并发、共享、虚拟、异步。⚠️ 最常考：<b data-page-node-id="XkOd9owFIx08VVYCwCTvPl">并发与共享是最基本的两个特征，互为存在条件</b>。</li>
-      <li data-page-node-id="AMTMUwLcewOUiumo0sVool"><b data-page-node-id="jinBCNiydYgeb7IZfmuJBF">发展历程</b>：手工 → 批处理（单道/多道）→ 分时 → 实时。<b data-page-node-id="1YsHBDcNqQQ4OdUkIp5sAf">多道程序设计</b>：内存中同时存放多道程序，宏观并行、微观串行。</li>
-      <li data-page-node-id="zr9BK5DlcWXEF7nJRfxk1i"><b data-page-node-id="3fH2crrPjMzHpORAndgWdj">分时系统</b>特点：多路性、独立性、及时性、交互性；<b data-page-node-id="ADcDtLPZKKW66uFR0Ci9cg">实时系统</b>：可靠性优先。</li>
-      <li data-page-node-id="9TiiDDMh5eAcCjYSgUD2M0">常见题型：选择题判断"哪个不是 OS 特征/功能"；分时 vs 实时辨析。</li>
-    </ul>
-  </div>
-  <div class="card" data-page-node-id="leDgr2rkwEa3wjyM8pYZtf">
-    <h2 data-page-node-id="f6cgDIkBekWgGmUC82qRYI">第2章 进程管理（分值大户 ⭐⭐⭐）</h2>
-    <h3 data-page-node-id="nhQsBDHMzkc2zYZqdH8qsJ">进程与线程</h3>
-    <ul data-page-node-id="zkP9Ye5eXxmaRyErCVDVgB">
-      <li data-page-node-id="d2PmJznxBbAZC15iqp5poT"><b data-page-node-id="xb3QmZImD67aP0Lqy2qfsn">进程</b>：程序的一次执行过程，是资源分配的基本单位；<b data-page-node-id="qhvJ3ToCcC5DbIt4axjQm8">线程</b>：CPU 调度的基本单位。</li>
-      <li data-page-node-id="PO8M7uWYG1wgCCsf6UXcLj">进程组成：<b data-page-node-id="IWWLWJuX9KZEAZDWG1HqIV">PCB（进程控制块）</b>+ 程序段 + 数据段。PCB 是进程存在的<b data-page-node-id="dRig7DzH5OmIsk2upjYgSW">唯一标志</b>。</li>
-      <li data-page-node-id="Pk3GwWqUHxgxvM8MrV52EG">三种基本状态：<b data-page-node-id="qABViYrIc2kRgBEBwRxpxf">就绪、运行、阻塞（等待）</b>。运行→阻塞是"主动"（等I/O等事件）；阻塞→就绪是"被动"（事件发生被唤醒）。⚠️ 阻塞不能直接变运行。</li>
-    </ul>
-    <h3 data-page-node-id="Y4iA1cqyiF80F2E6i5Lh9N">PV 操作（信号量机制）——必考</h3>
-    <div class="formula" data-page-node-id="EfBd8hgh8jaNIAQlotj8IC">P 操作（wait）：S = S − 1；若 S &lt; 0，进程阻塞入等待队列<br data-page-node-id="xSrZzMqDkXQma8xAxoGn1r">V 操作（signal）：S = S + 1；若 S ≤ 0，唤醒一个等待进程</div>
-    <ul data-page-node-id="gvtpVerDSZWBD5gWw9BPFt">
-      <li data-page-node-id="8nyJlEkFEKTcFrpPjq0CTa"><b data-page-node-id="2YCI9cdpMQKihWrHKHT81I">互斥</b>：信号量初值 = 1（互斥信号量 mutex）；<b data-page-node-id="6ZMaBScs642CLHVGkPmKOD">同步</b>：初值 = 资源数量。</li>
-      <li data-page-node-id="CCg48denPhPcNrgHAv9VHH">PV 必须<b data-page-node-id="N5uAA0DGU5DGCsXriLED0a">成对出现</b>；判断题常考"P 在前 V 在后顺序可随意"——错，顺序错误可能死锁。</li>
-    </ul>
-    <h3 data-page-node-id="GjBv0eW5xImAKndICrkWmG">死锁</h3>
-    <ul data-page-node-id="kCXpNYGeOXInIBB8e15UWx">
-      <li data-page-node-id="5zshuTHtO1Ij7bEWyUpEPI"><b data-page-node-id="sBpfW1kLO364HD2oBfEKWO">四个必要条件</b>（缺一不可，必背）：互斥、占有且等待（请求和保持）、不可剥夺（不可抢占）、循环等待。</li>
-      <li data-page-node-id="0mrbr2Gy2cjQGmjuSbMS1g"><b data-page-node-id="0dUDE6BjOjEoaM6aUAjDCV">处理策略</b>：预防（破坏四条件之一）、避免（<b data-page-node-id="angVPlagK2Th5k3T0u9AD1">银行家算法</b>）、检测与解除。</li>
-      <li data-page-node-id="lQFzQOijq0koWFKzlUGYOs">银行家算法思路：找到"安全序列"则安全；找不到安全序列则拒绝分配（可能死锁）。考计算题：给分配表，判断状态是否安全。</li>
-    </ul>
-    <h3 data-page-node-id="LBlc4RMZR9ER3MyAnOl3dF">调度算法</h3>
-    <table data-page-node-id="DhxSvGi9gYUhhHH0hc2sAD">
-      <tr data-page-node-id="7fTFjrNi8GH77bwpqCELxn"><th data-page-node-id="LAHJPBRHxhJQLFPUFuszOi">算法</th><th data-page-node-id="bTlwJBgyneVGULAAzrRJkI">规则</th><th data-page-node-id="6vt93IrDfmX9SIsPo42khY">特点/考点</th></tr>
-      <tr data-page-node-id="HAKaH9uy0fz2pI6izrr9r7"><td data-page-node-id="4aK5nVUIghdB5a0WvpiWBI">FCFS 先来先服务</td><td data-page-node-id="HjslGxLxmkSn2BAITGnLn5">按到达顺序</td><td data-page-node-id="fn4FySBt9RjYrEWnALSEqu">公平，但对短作业不利</td></tr>
-      <tr data-page-node-id="tDwXqdKZ5GpGcCgBFGcPrt"><td data-page-node-id="QODaPxqtk0poQIUVFGSBLE">SJF 短作业优先</td><td data-page-node-id="ENettf1SWlH3cp05kjJUXd">最短的先</td><td data-page-node-id="KhnkWT5NeFCfB4jhnRmDDH">平均等待时间最短；可能饿死长作业</td></tr>
-      <tr data-page-node-id="zwce1506gu374GdYGzbrYT"><td data-page-node-id="IglcrSixmJibhmBEIhwIGu">RR 时间片轮转</td><td data-page-node-id="0KbWgMB0boGqyxRpka8DLZ">按时间片轮流</td><td data-page-node-id="CWjQyWn15junwFOgdg1m0X">分时系统常用；时间片太大→退化为FCFS，太小→切换开销大</td></tr>
-      <tr data-page-node-id="LWu2ogXxYDFNlfW4v2ESWd"><td data-page-node-id="FmYAbIonVcQXWxTS2ocSP1">优先级调度</td><td data-page-node-id="eefoBHUgnKg6qZkQB6eYky">优先级高的先</td><td data-page-node-id="ItKUhIDwv0c7rbSzNarlD5">静态/动态；可能饿死低优先级</td></tr>
-      <tr data-page-node-id="ShRQS7sq77wP1tCJcKSHhu"><td data-page-node-id="nj4eIX9ESXsWeNE4eJO441">多级反馈队列</td><td data-page-node-id="JSggBniN8IH17vso7NeH1g">多个队列时间片递增</td><td data-page-node-id="K8yTziBjOsy9oLgZQ0FIgb">兼顾各方面，最灵活</td></tr>
-    </table>
-  </div>
-  <div class="card" data-page-node-id="IDn0eSlpMoAcLKWXLqTYTg">
-    <h2 data-page-node-id="S367LNAtjlHdoCdACotKF0">第3章 内存管理（计算题重灾区 ⭐⭐⭐）</h2>
-    <h3 data-page-node-id="5hDs4936bRYbcQvfcd7F1x">基本概念</h3>
-    <ul data-page-node-id="5zLSA65sBqolWqqyOl51eh">
-      <li data-page-node-id="HozIj99AP3IUCLwhvbgJxe">逻辑地址（虚拟）vs 物理地址；地址重定位：静态（装入时）/ 动态（运行时）。</li>
-      <li data-page-node-id="jAzEHJaZptdga4rHMXHS0g">交换与覆盖：扩充内存的早期手段。</li>
-    </ul>
-    <h3 data-page-node-id="ZSLjeAMFYZZZVgV1IVX0zi">连续分配</h3>
-    <ul data-page-node-id="fH0qwC641JQMWqDxnLXaVm">
-      <li data-page-node-id="VWpkxEe11oiOM2tqjv9sQD">分区：首次适应、最佳适应（产生大量小碎片）、最坏适应。</li>
-      <li data-page-node-id="REirEvqgyIcE3serqtGg23">碎片：内部碎片（分区内浪费）vs 外部碎片（分区之间小空间）。</li>
-    </ul>
-    <h3 data-page-node-id="22Qa2HNqYSLDxUMjgXkgby">分页（重点计算！）</h3>
-    <div class="formula" data-page-node-id="aos63j0pDDqr8vKVaD9ReT">物理地址 = 块号（页框号）× 页大小 + 页内偏移<br data-page-node-id="Vb05gXREGJtfbHLKhIiE1b">页号 = 逻辑地址 ÷ 页大小（取整）　偏移 = 逻辑地址 mod 页大小</div>
-    <ul data-page-node-id="1f1L9K5BpXyZGU1lC16cY1">
-      <li data-page-node-id="B3mQ4zq8zGHZ8ZkG0F3x5e">页表：页号→块号的映射。每进程一张。</li>
-      <li data-page-node-id="u6gg0xUktAw5E6LugiTC2r">页面大小通常 4KB；逻辑地址 32 位可分<b data-page-node-id="UiNBIHQiF8VrY9nsInL03L">页号位数 + 偏移位数</b>。</li>
-    </ul>
-    <h3 data-page-node-id="Zenn72DmWsAeUaE5NCzDjz">虚拟存储与页面置换算法（必考计算）</h3>
-    <table data-page-node-id="bBlWLvxLFcGKycuCks1JWs">
-      <tr data-page-node-id="xlgk3RmmuJ5zFqwXnnCFDf"><th data-page-node-id="Gz01RFfAt9yFLpwHtQbGZU">算法</th><th data-page-node-id="wByZAKvIXRk8g55Dcxgi8r">规则</th><th data-page-node-id="bK7RcT9lKr8ZWEO0KVB8kU">考点</th></tr>
-      <tr data-page-node-id="ggKfr4SZfpPdB8QDYXfSSs"><td data-page-node-id="yXbQwW8OwWFm0JUDOWhlnq">OPT 最佳置换</td><td data-page-node-id="wNFBNvbXzAb6rE7lnf7bEH">淘汰以后最久不用的页</td><td data-page-node-id="0nQPqSNu87OmthEqX7uCZQ">理论最优，无法实现（需未来信息），做题基准</td></tr>
-      <tr data-page-node-id="tJghTYsE1UjaS24fFMB4Tv"><td data-page-node-id="i0z0tpcFZGEFxz0kEIvFWu">FIFO 先进先出</td><td data-page-node-id="DzTpW72tlAAsVaWJgT27qe">淘汰最先进入内存的页</td><td data-page-node-id="ZfSz0J7chUSDyjfL3K32Ko">可能出现<b data-page-node-id="jxhztVz3GgqYTODx2y5ScN">Belady 异常</b>（页框增多缺页反而增多）</td></tr>
-      <tr data-page-node-id="CnNz7zgGd74BZV5fhHmOwE"><td data-page-node-id="JoHVKDXhUaBJJpm9v0m2FL">LRU 最近最久未使用</td><td data-page-node-id="DPGj3kmhF16bv4i8e1mFqc">淘汰最长时间没被访问的页</td><td data-page-node-id="50rwpCFBpsmOgsUinh5T8J">性能接近 OPT，最常考</td></tr>
-      <tr data-page-node-id="Tj2HaTrnbe6G5jtzLkU5GG"><td data-page-node-id="MmUo0Czp5GWEZTSWfuFxbc">Clock 简单时钟</td><td data-page-node-id="RQtQv3XDQDxTUfVeS3S8S8">循环扫描访问位</td><td data-page-node-id="QVSCzYC3xic6IhvHrfm8cR">LRU 的近似实现</td></tr>
-    </table>
-    <div class="tip" data-page-node-id="PcZRaWxICilSmAMQBpAHWl">缺页率计算：缺页次数/总访问次数。注意：发生<b data-page-node-id="mXkjD2iV15dguDQd9Yc8yW">缺页不一定淘汰</b>（内存有空位时直接调入）；<b data-page-node-id="W8GC0HfM1g72Y4SQfUmqYG">抖动（颠簸）</b>= 缺页率过高，CPU 大部分时间在换页。</div>
-    <h3 data-page-node-id="PPQ5HLOEis0C7MaQ8JPO02">分段 vs 分页</h3>
-    <ul data-page-node-id="ERQo9suHDKkL9Mw425ZJCy">
-      <li data-page-node-id="8uxj9lQ5ceijxrwETqJvhC">分页：物理划分、固定大小、<b data-page-node-id="hxCNavhLuGzwJ0k3Q0kBsW">有内部碎片</b>；分段：逻辑划分、不定长、<b data-page-node-id="dTIqzHCg454Gtf5tU2XEer">有外部碎片</b>。便于共享保护的是<b data-page-node-id="UX9YhWgknKN751AEEi3iNq">分段</b>。</li>
-    </ul>
-  </div>
-  <div class="card" data-page-node-id="CpbQXQpylNB3676nPKTe8H">
-    <h2 data-page-node-id="25NvTuoWIOb9Nvy0RHrs1S">第4章 文件管理</h2>
-    <ul data-page-node-id="CZFPb9MEc8GgH57a0ktP2P">
-      <li data-page-node-id="UmrE5nzDr1YlPy5vFAhiaC">文件逻辑结构：顺序文件、索引文件、索引顺序文件。</li>
-      <li data-page-node-id="psq9QPwnYqvOAH1N8VtHeJ"><b data-page-node-id="Ep3wABmsBuzF6IChsEaKJi">FAT / 索引节点（inode）</b>：显式链接表，常考概念辨析。</li>
-      <li data-page-node-id="4nccGQpRxrX5zi0GXCtBGZ">物理结构：<b data-page-node-id="f2cu21cLyy4UglVW7aE68m">连续分配</b>（随机访问快、有外部碎片）、<b data-page-node-id="CXxWUl89H30LRwu5K9AcVo">链接分配</b>（隐式链接/显式FAT）、<b data-page-node-id="ofujZZTrtrDt9xBX2o2Ujd">索引分配</b>（一个文件一个索引块）。</li>
-      <li data-page-node-id="pMrpgooenccMFeE9Sv7dL6">目录：单级/两级/树形（多级）。<b data-page-node-id="ejgk8vEWiYBvRowRttPd3P">路径名</b>、当前目录、工作目录。</li>
-      <li data-page-node-id="sl50htU7vr4ke1VDrYkxZE">文件共享：硬链接（同一 inode）、软链接（符号链接，快捷方式）。</li>
-      <li data-page-node-id="ckf4ZbfDyY3B2VM9BYRPME">空闲空间管理：空闲表、空闲链、位示图（常考：位示图用二进制位表示磁盘块是否空闲）。</li>
-    </ul>
-  </div>
-  <div class="card" data-page-node-id="iEXhedZqn3AwK1ahNcZAUy">
-    <h2 data-page-node-id="mlpBx9HNGRfOxVJDsR9VTq">第5章 设备管理</h2>
-    <ul data-page-node-id="90P5Kns4RjRhlifgwJ9x35">
-      <li data-page-node-id="CAnY04H6ucu2tMbBGhKbm1">I/O 控制方式：<b data-page-node-id="KFx6o1HaHHpVHgxJ5qtvsp">程序直接控制（轮询）→ 中断驱动 → DMA → 通道</b>。CPU 干预越来越少（选择题必考排序/辨析）。</li>
-      <li data-page-node-id="RKQtE6o8rHWUR0JUwtShB1">缓冲：单缓冲、双缓冲、循环缓冲、缓冲池。缓冲目的：缓和 CPU 与 I/O 速度不匹配、减少中断次数。</li>
-      <li data-page-node-id="YCHQ82BXeEtJij4cGSVgQt">SPOOLing（假脱机）：用磁盘模拟脱机 I/O，实现<b data-page-node-id="sQmx1lMoOdLoQ0tfECCo0l">虚拟设备</b>（如共享打印机），常考概念题。</li>
-      <li data-page-node-id="LaJsbcZzy3ja3MkLUJEPUq">设备分配：独占/共享/虚拟设备；逻辑设备表 LUT。</li>
-      <li data-page-node-id="SdRy3EDkmRfQhRPShkt0GR">磁盘访问时间 = <b data-page-node-id="cYeV0m5eZoDIjGze5zzcLf">寻道时间 + 旋转延迟 + 传输时间</b>。寻道时间通常是大头。</li>
-    </ul>
-    <h3 data-page-node-id="4qoWmPTs4FydxJILAL27S8">磁盘调度算法（计算必考）</h3>
-    <table data-page-node-id="uHUfrRsYPvLfi4L06Qcndz">
-      <tr data-page-node-id="TttG8CJOrksVPbLsrfK5fa"><th data-page-node-id="vOPye4miPrGEa2jKtnt8wo">算法</th><th data-page-node-id="a5teHWD0JIDO781qe98fLx">规则</th></tr>
-      <tr data-page-node-id="Vssg0mWyi3xrLLAqEKvMfA"><td data-page-node-id="mhZfTNi53erxJWWGRXcOrE">FCFS</td><td data-page-node-id="7zEEvx88H6TxqKpNA88BST">按请求顺序（磁头来回跑）</td></tr>
-      <tr data-page-node-id="GJiLglIGGgbJKN0gb8P5lh"><td data-page-node-id="g5HE6qs7mA0npLwJM0N0AS">SSTF 最短寻道</td><td data-page-node-id="5XK3gx1AMNPPxBRlSQA3EX">每次找离当前最近的（可能饿死边缘请求）</td></tr>
-      <tr data-page-node-id="t7zSBDzx33nekzPBpiXece"><td data-page-node-id="RWGMAQlpz7b1KDHIxhEelc">SCAN 电梯调度</td><td data-page-node-id="eJpYkvrNfAKRDNCJ4kv0SX">沿一个方向扫到头再折返</td></tr>
-      <tr data-page-node-id="g6jkG0URs6v2FQ3SPDNC1w"><td data-page-node-id="nrpwDBJCXtSDmDunVEhF00">C-SCAN 循环扫描</td><td data-page-node-id="itCETlB6VBG0O95mOKB7IO">只在一个方向服务，到头直接跳回起点</td></tr>
-    </table>
-    <div class="tip" data-page-node-id="dkB0mQS6UOIT7cdeA4Q92Z">考试常给磁道序列，让你按 SSTF/SCAN 算总寻道距离。方法：画一条磁道数轴，逐个标记移动轨迹，最后求和。注意 SCAN 题目会给"当前移动方向"。</div>
-  </div>
-  <div class="card" data-page-node-id="fMCVAaTYxKOjhIevziQGNq">
-    <h2 data-page-node-id="zQH5JDOHiY2fUCHcsUqX0l">第6章 其他高频小考点</h2>
-    <div class="kmap" data-page-node-id="o9ot7OkAjhX3SRiwUtSNyi">
-      <div class="kbox" data-page-node-id="YBxNjtKWItYw6TRlloOhej"><b data-page-node-id="IJA22ojnZ213QMw46WqBgx">中断与异常</b>内中断（异常：除0、越界）vs 外中断（I/O完成、时钟）；系统调用是用户态→核心态的"特殊中断"。</div>
-      <div class="kbox" data-page-node-id="qwt7ZiPiB55q63IQvnaQcW"><b data-page-node-id="fuThtpigHuB8BF8L6jrYAy">用户态/核心态</b>特权指令只能在核心态执行；系统调用切换到核心态。</div>
-      <div class="kbox" data-page-node-id="Mhw1dENKf8pYZyeGJTknhp"><b data-page-node-id="iOKnlEmH9Lqotm8CTwrYAp">管程</b>高级同步机制，封装了共享数据和 PV 操作；同一时刻只有一个进程在管程内。海南自考13180 大纲为"经典内容"，管程可能只考名词解释。</div>
-      <div class="kbox" data-page-node-id="bdfbh9xGwLDev3oZnnMhHs"><b data-page-node-id="AgIvRRTa66lF15s7nSTDci">实时调度</b>EDF 最早截止期优先；RM 单调速率。</div>
-      <div class="kbox" data-page-node-id="63DZi2GLLlHFimklGH9mFo"><b data-page-node-id="MSyP28qec4B0wRFkvejaHs">常用缩写</b>OS/PCB/LRU/FIFO/DMA/SPOOLing/FCFS/SSTF</div>
-    </div>
-  </div>
-  <div class="warn" data-page-node-id="ych2mLuAGXR7H0FxAmCcqc"><b data-page-node-id="1uwnuNbFKXBNvvHtVsh6hQ">时效提示：</b>以上考点基于全国自考《操作系统》课程通用大纲整理，仅供急救参考。考纲细节以湖北省教育考试院及主考院校发布的最新考试大纲为准。</div>
-</section>
-
-<!-- ==================== 必背清单 ==================== -->
-<section data-page-node-id="33lRh3NDlN7zpj7G3dw3mc">
-  <div class="card" data-page-node-id="7rZBy0JHo1Byu71z9XXxi1">
-    <h2 data-page-node-id="5smkSn3nlZVk4M8IXW3yoB">🔥 睡前必背 20 条（合上页面要能复述）</h2>
-  </div>
-  <div class="recite-item" data-page-node-id="3hGZc3eDF0Nv1rXySwVFjp">1. <b data-page-node-id="CiHU1ZZ9VjorVt5WPnAP6z">OS 四大特征</b>：并发、共享、虚拟、异步。<span class="en" data-page-node-id="7FzOqJst2NFFSZtIWhRBH5">并发和共享是最基本特征，互为存在条件。</span></div>
-  <div class="recite-item" data-page-node-id="zFuQkYDx214XmYmVUEPAaC">2. <b data-page-node-id="sqEDCZy0FRiej7YKOPcRaY">OS 四大功能</b>：处理机管理、存储管理、设备管理、文件管理。</div>
-  <div class="recite-item" data-page-node-id="br6BuZhqAnETMrlXPLs3dd">3. <b data-page-node-id="7LlFi5wulUOQIFJLz5wi77">进程是资源分配的基本单位，线程是 CPU 调度的基本单位。</b></div>
-  <div class="recite-item" data-page-node-id="Cj2T8q1phR4lR9FnBOjvEy">4. <b data-page-node-id="9HmpO35oT68LiQfkZPp7kJ">PCB 是进程存在的唯一标志</b>；进程 = PCB + 程序段 + 数据段。</div>
-  <div class="recite-item" data-page-node-id="fsbT3gj7uvTXtnqj9gFfr3">5. 进程三态：<b data-page-node-id="MbK3G7Q9OnsNclMlt79Aua">就绪→运行（调度）、运行→阻塞（主动等事件）、阻塞→就绪（被动被唤醒）、运行→就绪（时间片到）</b>。阻塞不能直接运行。</div>
-  <div class="recite-item" data-page-node-id="lqY15viYCKUOQ28VembLli">6. <b data-page-node-id="M72Tqc99LO1o5RpUQIEXfx">P 操作减 1，S&lt;0 阻塞；V 操作加 1，S≤0 唤醒</b>。互斥信号量初值 1，同步信号量初值 = 资源数。</div>
-  <div class="recite-item" data-page-node-id="vGY3QDXKYLkbkSwyq3tgxv">7. <b data-page-node-id="DpbHUEIWeeaL1nNMq0aXxW">死锁四条件</b>：互斥、占有且等待、不可剥夺、循环等待（缺一不可，破坏一个即可预防）。</div>
-  <div class="recite-item" data-page-node-id="f614U7RAbyKTwl7DGVV8nw">8. 死锁处理四策略：<b data-page-node-id="ZNOCPOzHStS9xhpJC6CddE">预防、避免（银行家算法）、检测、解除</b>。</div>
-  <div class="recite-item" data-page-node-id="P9TZBdqXDZIjWa4B9bzCGn">9. SJF 平均等待时间<b data-page-node-id="oRC1KdGLKkeVzFdqHzEqdK">最短</b>；RR 是<b data-page-node-id="TIRrAJAMo8amuEjRDFEXSu">分时系统</b>的算法；时间片太大退化为 FCFS。</div>
-  <div class="recite-item" data-page-node-id="2N8zGLrGepOZEmiFWa8Nkg">10. 分页<b data-page-node-id="oOEPi0osQ7EQki3bhoilnY">有内部碎片</b>，分段<b data-page-node-id="X0tbtLsyVQ2gLAovt4FmR4">有外部碎片</b>；分段便于共享与保护（逻辑单位），分页是物理单位。</div>
-  <div class="recite-item" data-page-node-id="GTOXNEv8pvbGVdtMJXQBT8">11. 物理地址 = <b data-page-node-id="5x6PXcx6G6AjuLplpNKGqB">块号 × 页大小 + 页内偏移</b>；页号 = 逻辑地址 ÷ 页大小。</div>
-  <div class="recite-item" data-page-node-id="YUdsoijYTRirPIbdREIms3">12. 置换算法：<b data-page-node-id="WgPNNAtZXvLQyUJOak692t">OPT（最优不可实现）、FIFO（有 Belady 异常）、LRU（近似最优，考得最多）</b>。</div>
-  <div class="recite-item" data-page-node-id="5lG1t5p4RvnvREVmRZImVZ">13. <b data-page-node-id="NzLZ9bA31rO7hNfstnCzXs">抖动（颠簸）</b>：缺页率过高导致 CPU 忙于换页。</div>
-  <div class="recite-item" data-page-node-id="I1VgtAhyL2Pmh7bi18Q4Ln">14. 索引文件引入的目的是<b data-page-node-id="xGDAoh6VBVZzEUbnoNdCk4">加快文件查找速度</b>；inode（索引节点）把文件名与文件描述分开。</div>
-  <div class="recite-item" data-page-node-id="dR0lkNURalK7XEmnRgz2ak">15. 硬链接共享同一 inode；软链接（符号链接）是路径的快捷方式。</div>
-  <div class="recite-item" data-page-node-id="LhUT9grpR9jOJPQ5U4q2K6">16. 空闲块管理：<b data-page-node-id="ZzGpaDlkO8HahjLWMgN8eI">位示图</b>用每一位表示一个磁盘块的使用情况。</div>
-  <div class="recite-item" data-page-node-id="8orM4RRHH3EizVe6EKyDAd">17. I/O 控制方式演进：<b data-page-node-id="z7RFGVf0GG9bHFCW6Cj1UZ">轮询 → 中断 → DMA → 通道</b>，CPU 干预依次减少。</div>
-  <div class="recite-item" data-page-node-id="RDPqX2z5Sn41FnVnOTNcAA">18. <b data-page-node-id="H0FFDMDCcK84tqdOK6Egm7">SPOOLing（假脱机）</b>技术把独占设备改造成共享的<b data-page-node-id="amTSwSDSRubpeZ3kufUTBQ">虚拟设备</b>（典型：打印机）。</div>
-  <div class="recite-item" data-page-node-id="ShpPVq2dhVOSBftIPg2AyB">19. 磁盘访问时间 = <b data-page-node-id="VI7a4ijnx2mHcfmQQpitKY">寻道时间 + 旋转延迟 + 传输时间</b>。</div>
-  <div class="recite-item" data-page-node-id="m92s8Zf0c7tHIRzFVqeXl2">20. 磁盘调度：<b data-page-node-id="gT714dB8xGxePQAcQDi2wK">SSTF 最短寻道优先；SCAN 电梯算法</b>（沿方向扫到底再折返）。</div>
-  <div class="tip" data-page-node-id="B9kXBF0DgcyXlRlcNS5Wyz"><b data-page-node-id="lWyUsukR2G2PPjF72hxxEb">背法：</b>Day1 晚上背一遍（读出声）、Day2 下午背第二遍（合页复述卡壳的做标记）、Day2 晚上背第三遍（只背卡壳的）。三遍法则，不抄写、不默写，只复述。</div>
-</section>
-
-<!-- ==================== 练习题 ==================== -->
-<section data-page-node-id="jx0nEWJWQMAgCY1wOytFJP">
-  <div class="card" data-page-node-id="RVtKgzaKpk4fcHcYHcrRXy">
-    <h2 data-page-node-id="Dr6GHcbzFpzD6HHXzbmPLL">✍️ 速成练习 16 题（做完 → 错题标出来晚上再刷）</h2>
-    <p style="font-size:.9em;color:#888" data-page-node-id="gESqAuSbisyOrYD89EObQi">点选项即判分；填空题填完点"对答案"。错题会在底部汇总。</p>
-  </div>
-
-  <div class="q" data-ans="B" data-type="choice" data-page-node-id="aFLZ5t7BFM3A4WrYd8xTQ1">
-    <span class="tag choice" data-page-node-id="ANfehHEWNSC5SBtI2r4noU">选择 · 第1章</span>
-    <p data-page-node-id="IhxwhmUTBzprrkwqi9DCL7">1. 操作系统最基本的两个特征是（　）</p>
-    <div class="opts" data-page-node-id="qLWQW35DrMmDKAs0ZNIOGF">
-      <label data-page-node-id="nrdNQODGUpLcjNPmB6W8dR"><input type="radio" name="q1" value="A" data-page-node-id="qYqoB6CznvyYGg4FeDwoe9">A. 并发和虚拟</label>
-      <label data-page-node-id="aamECfwMnf3BX3kCRFXprR"><input type="radio" name="q1" value="B" data-page-node-id="MVHH9w3UMXvQm3zyjtGbNZ">B. 并发和共享</label>
-      <label data-page-node-id="joBDGKCM8p0lR22rbEXEAC"><input type="radio" name="q1" value="C" data-page-node-id="bLAOLTpZTYw93anz16T260">C. 共享和异步</label>
-      <label data-page-node-id="yww4Vpb83Q17LrmRKyekFL"><input type="radio" name="q1" value="D" data-page-node-id="ttsVmxfQQBH9keYmrsZOc2">D. 虚拟和异步</label>
-    </div>
-    <div class="ans" data-page-node-id="XlFaLKKzgDO9oRFWi7Skra"></div>
-  </div>
-
-  <div class="q" data-ans="A" data-type="choice" data-page-node-id="srjye8xHSd4KhJwYQtjmjL">
-    <span class="tag choice" data-page-node-id="YOMFpTuV7pUvqrBE4eIqqt">选择 · 第2章</span>
-    <p data-page-node-id="9pAfuEJEP0MSGeb13OdvFO">2. 下列进程状态转换中，不可能发生的是（　）</p>
-    <div class="opts" data-page-node-id="w7UnTfDToucaQVVPFR1HST">
-      <label data-page-node-id="UHjSALAokXx4yRp1GJc8jr"><input type="radio" name="q2" value="A" data-page-node-id="fTJPZIw5OgTaXhIoEdlUgC">A. 阻塞 → 运行</label>
-      <label data-page-node-id="wywctexfFmYJKO1MNpaGj8"><input type="radio" name="q2" value="B" data-page-node-id="BKgB69Rc9GSW8qWggGsoJR">B. 运行 → 阻塞</label>
-      <label data-page-node-id="EKPnSlwbw5Th0B3FLTQ6BD"><input type="radio" name="q2" value="C" data-page-node-id="FKHBMDBk8odM7mf7VXG7YC">C. 就绪 → 运行</label>
-      <label data-page-node-id="wJba4XHOWKApSjSGFLFw7D"><input type="radio" name="q2" value="D" data-page-node-id="bRLc8rQ0BTKGKDDI4F1F7A">D. 运行 → 就绪</label>
-    </div>
-    <div class="ans" data-page-node-id="WLm6x8GbuuGr8AK0bQyuSR"></div>
-  </div>
-
-  <div class="q" data-ans="C" data-type="choice" data-page-node-id="U5Ui6OE7tUAU0MHBTRC82A">
-    <span class="tag choice" data-page-node-id="eAflJ2XoBP7vO79PSKvJ34">选择 · 第2章</span>
-    <p data-page-node-id="SDMq3VMmKuGQRqxZXA7Rbh">3. 用 PV 操作实现进程互斥时，信号量的初值应为（　）</p>
-    <div class="opts" data-page-node-id="BP9OwhRulH2mBxWg3Lc8HF">
-      <label data-page-node-id="DCLgIBuN5TCA0MzwVsfr1m"><input type="radio" name="q3" value="A" data-page-node-id="ZHplrEq3R2YDPHl9ur2IML">A. 0</label>
-      <label data-page-node-id="qFOa6NSUGQWw9YGETvJPjD"><input type="radio" name="q3" value="B" data-page-node-id="0T4yMRFCVH21QZtGshCbsI">B. −1</label>
-      <label data-page-node-id="20Oej56yX67sgwwQH5lVnj"><input type="radio" name="q3" value="C" data-page-node-id="YuFTi1KCArSNERolj7aGVs">C. 1</label>
-      <label data-page-node-id="lgiWGa191nO8d1yEJ4TOCx"><input type="radio" name="q3" value="D" data-page-node-id="nTlNGNSgxwM1fNElpv4qcg">D. 资源总数</label>
-    </div>
-    <div class="ans" data-page-node-id="yp2bZooB1rACRrJFArUIhV"></div>
-  </div>
-
-  <div class="q" data-ans="D" data-type="choice" data-page-node-id="QLnnHci3kgTiWdibjfIDmY">
-    <span class="tag choice" data-page-node-id="IUZiBhJ33um8JvVEG3BUKk">选择 · 第2章</span>
-    <p data-page-node-id="8ojou9r2xmqqMb3BOqYuTI">4. 下列不属于死锁产生的必要条件的是（　）</p>
-    <div class="opts" data-page-node-id="HEnUUQCIZrPAB5Wl1m4Zs7">
-      <label data-page-node-id="f03SGTIX8iv91CLwu0IWYG"><input type="radio" name="q4" value="A" data-page-node-id="9pkrJMm42NVhI2Ny8rVnqf">A. 互斥</label>
-      <label data-page-node-id="IzPEI44DOkItA5O1yLodIC"><input type="radio" name="q4" value="B" data-page-node-id="AkA7ztckV9KGJ3DAyPgXCz">B. 占有且等待</label>
-      <label data-page-node-id="f177f6FAvIDTCH7R10qlE8"><input type="radio" name="q4" value="C" data-page-node-id="klWKqoh5YN5jDFzypE3iKf">C. 循环等待</label>
-      <label data-page-node-id="CelsnqcjhVbY9EovHwZ3Qn"><input type="radio" name="q4" value="D" data-page-node-id="ineAhiIZXCsb96BE14IbpE">D. 时间片轮转</label>
-    </div>
-    <div class="ans" data-page-node-id="EN2PIv1TOb0vXrlWzrrWUw"></div>
-  </div>
-
-  <div class="q" data-ans="B" data-type="choice" data-page-node-id="eUx4CKbz1fvnyLbyqusaOo">
-    <span class="tag choice" data-page-node-id="YCqx7EMqrViSfHbd1lVYqr">选择 · 第2章</span>
-    <p data-page-node-id="BaJurkEqFCW1wdhPUm6XeP">5. 平均等待时间最短的调度算法是（　）</p>
-    <div class="opts" data-page-node-id="uE7svBGKR5BkNHdZXBvI0P">
-      <label data-page-node-id="IBzA5z7fx9VJ3JQvqb9Men"><input type="radio" name="q5" value="A" data-page-node-id="4nWh7LeLxJ0SsGhYccP86i">A. FCFS</label>
-      <label data-page-node-id="fx8zejIj8AJEIEXiiD5QYh"><input type="radio" name="q5" value="B" data-page-node-id="lPnkYg5eE2F3R185Q9R9aY">B. 短作业优先（SJF）</label>
-      <label data-page-node-id="8rtU7KM6tIi8S0MIcwzsE3"><input type="radio" name="q5" value="C" data-page-node-id="58WNV3GAvX4rjuDT3ae5lQ">C. 时间片轮转（RR）</label>
-      <label data-page-node-id="1D8qxeSlCEuBtkqFu7Prwb"><input type="radio" name="q5" value="D" data-page-node-id="sKMy2mtY8lugIRfqAB7xSg">D. 优先级调度</label>
-    </div>
-    <div class="ans" data-page-node-id="ySyOu1MlWL6dFRi516xt6L"></div>
-  </div>
-
-  <div class="q" data-ans="A" data-type="choice" data-page-node-id="kvw60fSC2N6cvHjxparzSi">
-    <span class="tag choice" data-page-node-id="zoKSMdgy9NDHbtqh4RVOCX">选择 · 第3章</span>
-    <p data-page-node-id="iOn12CLcGvLdbybQH270bA">6. 分页存储管理中，会产生（　）；分段存储管理中，会产生（　）</p>
-    <div class="opts" data-page-node-id="y0TOcBwgpMbNCKv02Uwkep">
-      <label data-page-node-id="kRog27whYIjtGs6re19YPn"><input type="radio" name="q6" value="A" data-page-node-id="Vh6fEtvf6SWpq2UQSCsNZQ">A. 内部碎片；外部碎片</label>
-      <label data-page-node-id="CHo3retVYpE1N9KCqvj6iZ"><input type="radio" name="q6" value="B" data-page-node-id="aW8oxR7rS35UPX4566wuiE">B. 外部碎片；内部碎片</label>
-      <label data-page-node-id="y5osKdWPhNSKLYMEnPaDyZ"><input type="radio" name="q6" value="C" data-page-node-id="YBN7Yh8TBsHmfOLaJXIkcY">C. 都产生内部碎片</label>
-      <label data-page-node-id="GPWCETeFWt1o6eAxOrM0QS"><input type="radio" name="q6" value="D" data-page-node-id="3APXbc4EC11Ekh8BEVFCSE">D. 都产生外部碎片</label>
-    </div>
-    <div class="ans" data-page-node-id="vhFl5reKgDCODW75eXyo8T"></div>
-  </div>
-
-  <div class="q" data-ans="B" data-type="choice" data-page-node-id="pNqowyOySHHA4b3MGNkRd9">
-    <span class="tag choice" data-page-node-id="vTAgLqx1JZA5A4sCoiqWFK">选择 · 第3章</span>
-    <p data-page-node-id="rKPOmOpDHIl9ODiHLl0j53">7. 某系统页面大小为 4KB（4096B），逻辑地址 8448 的页号和偏移分别是（　）</p>
-    <div class="opts" data-page-node-id="ZwwUFqRVZRvBpBHS3qNdzf">
-      <label data-page-node-id="IZhKUyaNo2OJdesz8TtDcD"><input type="radio" name="q7" value="A" data-page-node-id="S8rFmP8WjHpE0sugn0smp8">A. 页号 1，偏移 4352</label>
-      <label data-page-node-id="zBooyP66A5xaAq7tFFMUNr"><input type="radio" name="q7" value="B" data-page-node-id="MdWPsEgQWAov2G0FkC6j79">B. 页号 2，偏移 256</label>
-      <label data-page-node-id="LsH9pAw2phoFXH8iq06NJQ"><input type="radio" name="q7" value="C" data-page-node-id="BHab2NydzVCAbm4ZPNKmJF">C. 页号 2，偏移 4352</label>
-      <label data-page-node-id="RL4qMwtzUzYzZUYUpBec25"><input type="radio" name="q7" value="D" data-page-node-id="qWRBRDESFexycPdi5Lqfy1">D. 页号 3，偏移 256</label>
-    </div>
-    <div class="ans" data-page-node-id="Xe5na9lVWXaEUCbyk4uI4g"></div>
-  </div>
-
-  <div class="q" data-ans="C" data-type="choice" data-page-node-id="ekenVBKPNaQkVNOsm2hCay">
-    <span class="tag choice" data-page-node-id="BDt8Oxbi4jaDxiyEzBDJSM">选择 · 第3章</span>
-    <p data-page-node-id="vQ1n7LMudtHQiI1LIxiJjn">8. 可能出现 Belady 异常（页框增多缺页反而增多）的置换算法是（　）</p>
-    <div class="opts" data-page-node-id="Pzf8ND6APnQE0pAndhrV37">
-      <label data-page-node-id="JgOX4es7DlwWVsSx92YBGY"><input type="radio" name="q8" value="A" data-page-node-id="lD7mdSztXfFMHp0nHBfwEC">A. LRU</label>
-      <label data-page-node-id="NcyJod5gAOKWa1zAbHRrbl"><input type="radio" name="q8" value="B" data-page-node-id="HnaKhcZGUA7yCdgzpUCcte">B. OPT</label>
-      <label data-page-node-id="PlBfFm3poWUUb5MEAg9qZ8"><input type="radio" name="q8" value="C" data-page-node-id="tVGVjkjtpsY762DUqLfRty">C. FIFO</label>
-      <label data-page-node-id="bqkFpCN5pjraHkYDyz1rCf"><input type="radio" name="q8" value="D" data-page-node-id="79LOY0xsDSYD6UooQcXZWq">D. Clock</label>
-    </div>
-    <div class="ans" data-page-node-id="cciRgATWFIymQAr3Y4BiWd"></div>
-  </div>
-
-  <div class="q" data-ans="B" data-type="choice" data-page-node-id="GKoHA5z9gVsZRWwwgFAyRT">
-    <span class="tag choice" data-page-node-id="1dhaqGZGgaqG5Vncc5yuA9">选择 · 第3章</span>
-    <p data-page-node-id="Y3h9Z9d3kyFFtjFlnu60cg">9. 系统频繁换页、CPU 大部分时间花在页面调度上，这种现象称为（　）</p>
-    <div class="opts" data-page-node-id="7eZC2q3OLiDqaK1664JBhd">
-      <label data-page-node-id="0hCjN50rzFOsdJBzyFjxuV"><input type="radio" name="q9" value="A" data-page-node-id="Bm2aDscaq79tHdAEB5rUjh">A. 碎片</label>
-      <label data-page-node-id="Sr8ynLfQC44yuCMmcv6qoC"><input type="radio" name="q9" value="B" data-page-node-id="DPPqvzDVtUk9SG3oQ70X4z">B. 抖动（颠簸）</label>
-      <label data-page-node-id="863m1CtiWQN7gQDQsyQZbZ"><input type="radio" name="q9" value="C" data-page-node-id="RjtjKkzUjUDJTvOHvt3m0X">C. 饥饿</label>
-      <label data-page-node-id="UN4lsTGOO5tOoyzCjnUOtv"><input type="radio" name="q9" value="D" data-page-node-id="mex1JmZgl1gmKahG5heBFS">D. 死锁</label>
-    </div>
-    <div class="ans" data-page-node-id="8s1QH5H0Hg6DmTW6DGMCxW"></div>
-  </div>
-
-  <div class="q" data-ans="B" data-type="choice" data-page-node-id="QyeuZMQUEywuDV9w5bhnXx">
-    <span class="tag choice" data-page-node-id="nzuuAAjW2A30UAwUb0lFjM">选择 · 第4章</span>
-    <p data-page-node-id="47oNjmTr6GvylSGqGn7eCN">10. 用一位二进制表示磁盘块是否空闲的空闲空间管理方法是（　）</p>
-    <div class="opts" data-page-node-id="2VHMgE0GLTAcTrXlTuGtUh">
-      <label data-page-node-id="GedbbxAW3U3yxNBKoF4dp4"><input type="radio" name="q10" value="A" data-page-node-id="AXDQHQSychDSroIBIJowBD">A. 空闲表</label>
-      <label data-page-node-id="ZFnG70uByZxNheoTUauaFE"><input type="radio" name="q10" value="B" data-page-node-id="nOBe5lu9lop9817GPTUysx">B. 位示图</label>
-      <label data-page-node-id="qxYMudLShvOj5ZbWABnEYV"><input type="radio" name="q10" value="C" data-page-node-id="ax2NY6SHMt8hunzDzCzl0m">C. 空闲链表</label>
-      <label data-page-node-id="JQqfvpkW9qElNyLHdw1ZN8"><input type="radio" name="q10" value="D" data-page-node-id="kTQg7bQsuJ8ujhGt8z5nKJ">D. 成组链接</label>
-    </div>
-    <div class="ans" data-page-node-id="ErS6uG6ys1m3xTcSyd9bjm"></div>
-  </div>
-
-  <div class="q" data-ans="A" data-type="choice" data-page-node-id="PHtY65JJwbxACHDo7ChFfn">
-    <span class="tag choice" data-page-node-id="CZRDcxKIzL1JA8lotadi4u">选择 · 第5章</span>
-    <p data-page-node-id="BoMnDxJjsbZqrrJdToiQI4">11. 引入缓冲技术的主要目的是（　）</p>
-    <div class="opts" data-page-node-id="PzybPFMyoHhVrEGFzkVBvm">
-      <label data-page-node-id="SK7frPCCHLGLy7rP1rNjE5"><input type="radio" name="q11" value="A" data-page-node-id="E2wvJyn448UntJDF71uLGA">A. 缓和 CPU 与 I/O 设备速度不匹配的矛盾</label>
-      <label data-page-node-id="hKW3CHU4okCY3SXH55pMve"><input type="radio" name="q11" value="B" data-page-node-id="VsVQB2HQvy2dwMvvQlxkYj">B. 节省内存</label>
-      <label data-page-node-id="E7VFoz6CB3sPj6RA1cTknH"><input type="radio" name="q11" value="C" data-page-node-id="6RwIBkUPFJrQfQPCG9aL3o">C. 提高设备的可靠性</label>
-      <label data-page-node-id="GrUm9DnRhm1b6HthQooyWN"><input type="radio" name="q11" value="D" data-page-node-id="D8raLzGsyzxrUKfwZkWCyT">D. 增加用户可用空间</label>
-    </div>
-    <div class="ans" data-page-node-id="s736uRRDJFwFZNFknZDKQh"></div>
-  </div>
-
-  <div class="q" data-ans="C" data-type="choice" data-page-node-id="sQ6fH7I70J7YWwPQ4HGFu0">
-    <span class="tag choice" data-page-node-id="ETOdYOv8yzaFd1j9wJitfk">选择 · 第5章</span>
-    <p data-page-node-id="YmPGUidWMuSEciCqBHW1Ly">12. SPOOLing 技术将独占设备改造为（　）</p>
-    <div class="opts" data-page-node-id="jCGhgslSNDzFOYvscLZ6U7">
-      <label data-page-node-id="fI5WJAiEzyaacvMAtya1EI"><input type="radio" name="q12" value="A" data-page-node-id="Gjc2ukPSiJLCazJhRxFJdo">A. 块设备</label>
-      <label data-page-node-id="qVVyGrmZgX16kiA2nOoe7r"><input type="radio" name="q12" value="B" data-page-node-id="uscUdE2wACoTUKaM2EihaV">B. 字符设备</label>
-      <label data-page-node-id="yDtcof1YtKSj1GQdZZknDM"><input type="radio" name="q12" value="C" data-page-node-id="DnmbSWMKJ64kUPiEils3wE">C. 共享的虚拟设备</label>
-      <label data-page-node-id="hoLT2PNR06aBIr3NyXrcJ9"><input type="radio" name="q12" value="D" data-page-node-id="rlDNN3izvLjPVGVUSU45kf">D. 脱机设备</label>
-    </div>
-    <div class="ans" data-page-node-id="XnAfRqQPwzG7PpoKwQSxVc"></div>
-  </div>
-
-  <div class="q" data-ans="A" data-type="fill" data-fill-ans="S减1" data-fill-key="s1" data-page-node-id="odnEybUaH8BzjIHczsg2Iy">
-    <span class="tag fill" data-page-node-id="FRLm82WVPBkXQvp87kZ0DI">填空 · 第2章</span>
-    <p data-page-node-id="MOEL3ls7XenblOQi1Iz4TT">13. P 操作（wait 操作）的定义：信号量 <input class="fill-input" style="width:90px;display:inline" data-key="s1" data-page-node-id="m2AqrhEwU42aChOiHWIjVh">，若其值小于 0，则进程阻塞并进入等待队列。</p>
-    <button class="btn reveal" onclick="checkFill(this)" data-page-node-id="VqCS8EyTLEFxQFT9Rz8hYX">对答案</button>
-    <div class="ans" data-page-node-id="isuQ7lajPgQhhh0VCXEIM3"></div>
-  </div>
-
-  <div class="q" data-ans="A" data-type="fill" data-fill-ans="PCB" data-fill-key="s2" data-page-node-id="m5mg5sPXhcBzXjTPsiaEQE">
-    <span class="tag fill" data-page-node-id="MzA3zQDeWhFjNjpa9cPQlx">填空 · 第2章</span>
-    <p data-page-node-id="8EM1AZk4qD4SKryOc0PoIh">14. 进程控制块的英文缩写是 <input class="fill-input" style="width:90px;display:inline" data-key="s2" data-page-node-id="YvG6ikkpUAkaqaHtdVGAC9">，它是进程存在的唯一标志。</p>
-    <button class="btn reveal" onclick="checkFill(this)" data-page-node-id="jy8PhNGFO2cwT45EQCXNfN">对答案</button>
-    <div class="ans" data-page-node-id="RlFYsmajx8YXyq1JkfDfiE"></div>
-  </div>
-
-  <div class="q" data-ans="A" data-type="fill" data-fill-ans="寻道时间" data-fill-key="s3" data-page-node-id="D4hc80t3jOdMN0Jfg525WW">
-    <span class="tag fill" data-page-node-id="nF1jSuIT0PzQiJHVepOMKN">填空 · 第5章</span>
-    <p data-page-node-id="O02MOrbWqFEgMBcsIu0OjH">15. 磁盘访问时间中占比最大、通常成为优化重点的是 <input class="fill-input" style="width:110px;display:inline" data-key="s3" data-page-node-id="fji1DRghrClGOBSOnA135z">。</p>
-    <button class="btn reveal" onclick="checkFill(this)" data-page-node-id="f31qvusko32mn6m4QJef2C">对答案</button>
-    <div class="ans" data-page-node-id="eS3ByLTmLoqxpEUsNwVgqU"></div>
-  </div>
-
-  <div class="q" data-type="judge" data-ans="错" data-page-node-id="y2nRnHpIyDyEQVepte3EtP">
-    <span class="tag judge" data-page-node-id="zPNGpXbXgpFZrgcXP8yYCw">判断 · 第2章</span>
-    <p data-page-node-id="ftZ3fCyXQI7qwZDlv1WLDn">16. 信号量的 P 操作和 V 操作在程序中的位置可以随意互换，不影响程序正确性。</p>
-    <button class="btn" onclick="judge(this,'错')" data-page-node-id="k18VhUa48K1QgsC44C2BFb">答：错</button>
-    <button class="btn" onclick="judge(this,'对')" data-page-node-id="avQdPjBWoKebtMUShyumBC">答：对</button>
-    <div class="ans" data-page-node-id="xcxmUaNcw8FB4bRpHRbkUv"></div>
-  </div>
-
-  <div class="score-bar" data-page-node-id="vFIf6OjbLnvV5vSslXbFLa">
-    得分：<b id="score" data-page-node-id="zVOTfq3z501vISbioHNPuP">0</b> / 已答 <span id="done" data-page-node-id="1Ms6DWKwLtDONi1kKPSeMg">0</span> 题　<span style="color:#999;font-size:.85em" id="wronglist" data-page-node-id="EiF1oZrynpZnh80iIjFieM"></span>
-  </div>
-</section>
-
-<!-- ==================== 考场策略 ==================== -->
-<section data-page-node-id="u9aKSEApFJmAgAnxLd9MmF">
-  <div class="card" data-page-node-id="RGDlLZZCwi65AzDOx2TUU8">
-    <h2 data-page-node-id="gCORyJdruWgeLptl8oK1IK">🚨 考场 60 分抢救策略</h2>
-    <h3 data-page-node-id="uhbejAcxw0oFvN9I5MxWa1">考前 1 小时</h3>
-    <ul data-page-node-id="wJLJjpZSE00wBDSHZHOYTu">
-      <li data-page-node-id="V0IJu3JbVJF7ERVJEDqANl">只看<b data-page-node-id="lYfKTIz0DF5ZkAf5AYmghY">必背清单 20 条</b>和错题，不看新内容。</li>
-      <li data-page-node-id="DfvBLlS8NkIcWPQQSmn9B6">检查：准考证、身份证、2B 铅笔、黑色签字笔、橡皮、手表（如允许）。</li>
-    </ul>
-    <h3 data-page-node-id="8F0kM72FkBE1QOCxGrJ7h8">答题顺序</h3>
-    <ol data-page-node-id="F59Bk6ockG11h4z6vK7yRD">
-      <li data-page-node-id="eNduqycfsxguU7tN7Aegvg">先做选择/判断/填空（背过的直接写，30 分钟内拿下）。</li>
-      <li data-page-node-id="fhqv6v6ZXFO13jA8UHEfj9">再做简单应用题（页式地址变换、PV 操作、磁盘调度——本页都练过套路）。</li>
-      <li data-page-node-id="5vG3DXnPhWJgVLj4iUbvD9">最后攻大题（银行家算法、置换算法计算题），不会写也要<b data-page-node-id="P8kInziZ9CKlKKk2ifO4qd">写出公式和相关概念</b>，过程分是给自考卷面留的余地。</li>
-    </ol>
-    <h3 data-page-node-id="cS1dhAryoDSZOHvZS3ydeS">各题型保分技巧</h3>
-    <ul data-page-node-id="xUCecXDRPYXs3oGAhukvOk">
-      <li data-page-node-id="Bfi6DzwNwzombxbpdbZKZj">选择题：排除法优先，"绝对化措辞"（一定/必须/所有）的选项大概率是错的；"可能/通常/一般来说"的选项大概率是对的。</li>
-      <li data-page-node-id="d5PlkgNZybpj8g8qdSE47h">填空题：实在不会就填本页出现过的关键词（信号量、PCB、抖动、位示图、LRU…），命中率不低。</li>
-      <li data-page-node-id="GruKVb7f2KCwYe4FPzrbRQ">计算题：<b data-page-node-id="GSdkJJOwbGi5JHHisIsgo8">必须写步骤</b>。"页号=逻辑地址÷页大小"这种公式哪怕最后算错，写公式也有过程分。卷面整洁，分点作答。</li>
-      <li data-page-node-id="hGe1kevElG7DKnUXkaDiFv">简答题：按"定义 → 特点/组成 → 举例"三段式写，字数宁可超、不要空白。</li>
-    </ul>
-    <div class="warn" data-page-node-id="yirIG9QRffC6LRSZgL9Rqd"><b data-page-node-id="2VsinjdF574sMIGTShhXnW">两条红线：</b>① 不留空白，选择不确定也要蒙（排除后二选一）；② 计算题步骤优先于结果，公式分必拿。</div>
-  </div>
-  <div class="card" data-page-node-id="pBWUGMb9XzmS69yUdnsggD">
-    <h2 data-page-node-id="18s4b90vyFrfZaVwWJ1ycd">⏰ 时间分配建议（以 150 分钟卷面为例）</h2>
-    <table data-page-node-id="ImeqqvU3kNZX3ksGzTHMBE">
-      <tr data-page-node-id="BmmorOC1p9Kr9f2tElEnle"><th data-page-node-id="4N39dRNavIhWTqiDLMCQHW">时段</th><th data-page-node-id="WGLR1pDuDvlY4toRYSEPW5">任务</th></tr>
-      <tr data-page-node-id="YO3mI0ppuZrwIT3zjIOLRe"><td data-page-node-id="idIXlHeFSlL8r3wl2okOT2">0–10 min</td><td data-page-node-id="9ljVo9eKz2vjOZvt1MRzDZ">通览全卷，标记会做/没把握的题</td></tr>
-      <tr data-page-node-id="IheC33QuwUPV9b3CfOT8QB"><td data-page-node-id="Xm7rGUd0QNfsPlA4nFYRa7">10–50 min</td><td data-page-node-id="NoSfniW5GR2Ibh8RLGlloH">选择 + 判断 + 填空（背过的部分）</td></tr>
-      <tr data-page-node-id="i97s87kIdgD79c4qFVyYhZ"><td data-page-node-id="ZsR4CL2bALMPfAfMXpQTNX">50–110 min</td><td data-page-node-id="tEKczNCpMg1ImVme92zlS3">计算题与应用题（本页练过的套路）</td></tr>
-      <tr data-page-node-id="zqJ6Vl3v8hZ32lYhxNjqMK"><td data-page-node-id="iGSxwsHoIwuSUJyBgdaqU0">110–140 min</td><td data-page-node-id="BLyi26Gn84MnPdTGr5WhrK">简答/综合题，按三段式写满</td></tr>
-      <tr data-page-node-id="9taqiIGvpWyenFj9Jd0dgx"><td data-page-node-id="dr1TsC9HbAeNFdNob9Mh1M">最后 10 min</td><td data-page-node-id="WM3od2pYuUr08VWVJ6hCAp">回头检查空白题，全部补满</td></tr>
-    </table>
-  </div>
-</section>
-
-<footer data-page-node-id="WFLl2pwYwtomBEYyXy1Zfw">操作系统（13180）考前速成 · 内容基于通用自考大纲整理，具体考纲以湖北省教育考试院最新发布为准 · 祝考试顺利</footer>
-</div>
-
-<script>
-function go(idx, btn){
-  document.querySelectorAll('section').forEach((s,i)=>s.classList.toggle('active', i===idx));
-  document.querySelectorAll('nav button').forEach(b=>b.classList.remove('active'));
-  btn.classList.add('active');
-  window.scrollTo({top:0});
+const rand=(a,b)=>Math.floor(Math.random()*(b-a+1))+a;
+const shuffle=a=>{a=[...a];for(let i=a.length-1;i>0;i--){const j=rand(0,i);[a[i],a[j]]=[a[j],a[i]];}return a;};
+function scheduling(jobs,algo='FCFS',quantum=2){
+ const list=jobs.map((p,i)=>({...p,i,left:p.burst,first:null,finish:null})),segments=[];let t=0,done=0,queue=[];
+ const segment=(p,len)=>{if(p.first===null)p.first=t;segments.push({name:p.name,start:t,end:t+len});p.left-=len;t+=len;if(!p.left){p.finish=t;done++;}};
+ if(algo==='RR'){
+  const pending=[...list].sort((a,b)=>a.arrival-b.arrival||a.i-b.i);
+  while(done<list.length){if(!queue.length&&pending.length&&t<pending[0].arrival){segments.push({name:'空闲',start:t,end:pending[0].arrival});t=pending[0].arrival;}
+   while(pending.length&&pending[0].arrival<=t)queue.push(pending.shift());
+   const p=queue.shift();if(!p)throw Error('invalid RR input');segment(p,Math.min(quantum,p.left));
+   while(pending.length&&pending[0].arrival<=t)queue.push(pending.shift());if(p.left)queue.push(p);
+  }
+ }else{
+  while(done<list.length){const ready=list.filter(p=>p.left>0&&p.arrival<=t);if(!ready.length){const nt=Math.min(...list.filter(p=>p.left>0).map(p=>p.arrival));segments.push({name:'空闲',start:t,end:nt});t=nt;continue;}
+   ready.sort((a,b)=>((algo==='SJF'?a.burst-b.burst:algo==='SRTF'?a.left-b.left:0)||a.arrival-b.arrival||a.i-b.i));const p=ready[0];segment(p,algo==='SRTF'?1:p.left);
+  }
+ }
+ const rows=list.map(p=>({...p,turn:p.finish-p.arrival,weight:(p.finish-p.arrival)/p.burst,wait:p.finish-p.arrival-p.burst,response:p.first-p.arrival}));
+ const merged=[];for(const s of segments){const last=merged.at(-1);if(last&&last.name===s.name&&last.end===s.start)last.end=s.end;else merged.push({...s});}
+ return{rows,segments:merged,average:rows.reduce((n,p)=>n+p.turn,0)/rows.length,weighted:rows.reduce((n,p)=>n+p.weight,0)/rows.length};
 }
-
-let score = 0, doneCount = 0;
-const wrongSet = new Set();
-
-function updateBar(){
-  document.getElementById('score').textContent = score;
-  document.getElementById('done').textContent = doneCount;
-  document.getElementById('wronglist').textContent = wrongSet.size ? ('错题：'+[...wrongSet].join('、')) : '';
+function paging(refs,capacity,algo){let frames=[],queue=[],last=new Map(),faults=0;const steps=[];
+ refs.forEach((p,i)=>{let fault=!frames.includes(p),out=null;if(fault){faults++;if(frames.length<capacity){frames.push(p);queue.push(p);}else{let victim;
+ if(algo==='FIFO')victim=queue.shift();else if(algo==='LRU')victim=[...frames].sort((a,b)=>last.get(a)-last.get(b))[0];else victim=[...frames].sort((a,b)=>{let x=refs.indexOf(a,i+1),y=refs.indexOf(b,i+1);return(y<0?Infinity:y)-(x<0?Infinity:x);})[0];
+ out=victim;frames[frames.indexOf(victim)]=p;if(algo==='FIFO')queue.push(p);}}
+ last.set(p,i);steps.push({p,frames:[...frames],fault,out});});return{faults,steps};
 }
+function banker(available,allocation,max){const need=max.map((r,i)=>r.map((v,j)=>v-allocation[i][j])),work=[...available],finished=new Set(),steps=[],sequence=[];
+ while(finished.size<allocation.length){const i=need.findIndex((r,i)=>!finished.has(i)&&r.every((v,j)=>v<=work[j]));if(i<0)break;const before=[...work];allocation[i].forEach((v,j)=>work[j]+=v);finished.add(i);sequence.push(i);steps.push({i,before,after:[...work]});}
+ return{safe:finished.size===allocation.length,need,steps,sequence,work,unfinished:allocation.map((_,i)=>i).filter(i=>!finished.has(i))};
+}
+function disk(head,requests,algo,direction='up',maxTrack=199){let order=[];if(algo==='FCFS')order=[...requests];else if(algo==='SSTF'){let p=head,left=[...requests];while(left.length){left.sort((a,b)=>Math.abs(a-p)-Math.abs(b-p)||a-b);p=left.shift();order.push(p);}}else{
+ const high=requests.filter(p=>p>=head).sort((a,b)=>a-b),low=requests.filter(p=>p<head).sort((a,b)=>b-a);
+ if(direction==='up'){order=[...high];if(low.length){if(algo==='SCAN'&&order.at(-1)!==maxTrack&&head!==maxTrack)order.push(maxTrack);order.push(...low);}}
+ else{order=[...low];if(high.length){if(algo==='SCAN'&&order.at(-1)!==0&&head!==0)order.push(0);order.push(...high);}}
+ }let prev=head,total=0;const steps=order.map(p=>{const distance=Math.abs(p-prev),from=prev;total+=distance;prev=p;return{from,to:p,distance,total};});return{order,total,steps};
+}
+function makeLab(kind,choice){
+ if(kind==='schedule'){const algo=choice||shuffle(['FCFS','SJF','SRTF','RR'])[0],jobs=['A','B','C','D'].map((name,i)=>({name,arrival:i?rand(0,5):0,burst:rand(1,7)}));return{kind,algo,jobs,quantum:2};}
+ if(kind==='address'){const size=2**rand(9,12),page=rand(1,7),offset=rand(0,size-1),frame=rand(8,24);return{kind,size,page,offset,frame,address:page*size+offset};}
+ if(kind==='paging')return{kind,algo:choice||shuffle(['FIFO','LRU','OPT'])[0],refs:Array.from({length:12},()=>rand(0,5)),capacity:3};
+ if(kind==='banker'){const allocation=Array.from({length:3},()=>[rand(0,3),rand(0,3)]),max=allocation.map(r=>r.map(v=>v+rand(0,4)));return{kind,available:[rand(0,3),rand(0,3)],allocation,max};}
+ return{kind:'disk',algo:choice||shuffle(['FCFS','SSTF','SCAN','LOOK'])[0],head:rand(35,165),requests:shuffle(Array.from({length:20},(_,i)=>i*10+rand(0,9))).slice(0,6),direction:rand(0,1)?'up':'down',maxTrack:199};
+}
+function solveLab(l){if(l.kind==='schedule')return scheduling(l.jobs,l.algo,l.quantum);if(l.kind==='paging')return paging(l.refs,l.capacity,l.algo);if(l.kind==='banker')return banker(l.available,l.allocation,l.max);if(l.kind==='disk')return disk(l.head,l.requests,l.algo,l.direction,l.maxTrack);return{page:Math.floor(l.address/l.size),offset:l.address%l.size,physical:l.frame*l.size+l.offset};}
+function labAnswer(l){const s=solveLab(l);return l.kind==='schedule'?s.average:l.kind==='address'?s.physical:l.kind==='paging'?s.faults:l.kind==='banker'?(s.safe?'安全':'不安全'):s.total;}
+function labCorrect(l,value){if(l.kind==='banker')return value===labAnswer(l);return String(value).trim()!==''&&Number.isFinite(Number(value))&&Math.abs(Number(value)-labAnswer(l))<0.011;}
+if(typeof module!=='undefined')module.exports={scheduling,paging,banker,disk,makeLab,solveLab,labAnswer,labCorrect};
 
-// 选择题
-document.querySelectorAll('.q[data-type="choice"]').forEach(q=>{
-  const name = 'q'+(q.querySelector('input').name.slice(0)? q.querySelector('input').name : '');
-  q.querySelectorAll('input[type=radio]').forEach(r=>{
-    r.addEventListener('change', ()=>{
-      if(q.dataset.locked) return;
-      q.dataset.locked = 1;
-      doneCount++;
-      const ans = q.dataset.ans;
-      const ok = r.value === ans;
-      if(ok){ score++; } else { wrongSet.add(q.querySelector('.tag').nextElementSibling.textContent.trim().slice(0,2)); }
-      const box = q.querySelector('.ans');
-      box.style.display='block';
-      box.className = 'ans ' + (ok?'right':'wrong');
-      box.innerHTML = (ok?'✔ 答对了。':'✘ 正确答案：'+ans+'。') + getExp(q);
-      updateBar();
-    });
-  });
+const KEY='os13180-sprint-v1';
+const fresh=()=>({version:1,attempts:{},wrong:[],mastered:[],tasks:[],shortDraft:{},shortChecks:{},shortOpen:[],quiz:null,mock:null,labCount:0,labRight:0,focusSeconds:0});
+let storageOK=true,state;try{state=Object.assign(fresh(),JSON.parse(localStorage.getItem(KEY)||'null')||{});}catch{state=fresh();storageOK=false;}
+const $=s=>document.querySelector(s),e=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+let route='home',day=0,chapter='all',noteMode='read',search='',shortChapter='all',lab=makeLab('schedule','FCFS'),labResult=null,quizChapter='all',timerRunning=false,timerUntil=0,timerRemaining=1500,toastHandle;
+function persist(){try{localStorage.setItem(KEY,JSON.stringify(state));storageOK=true;}catch{storageOK=false;}updateSaveStatus();}
+function updateSaveStatus(){const el=$('#save-status');if(el)el.textContent=storageOK?'进度自动保存在此浏览器':'保存不可用，请导出备份';}
+function toast(message){clearTimeout(toastHandle);$('#toast')?.remove();const el=document.createElement('div');el.id='toast';el.className='toast';el.role='status';el.textContent=message;document.body.append(el);toastHandle=setTimeout(()=>el.remove(),3500);}
+const labels={home:'今日冲刺',notes:'考点速记',quiz:'选择练习',lab:'计算训练',short:'简答默写',wrong:'错题复练',mock:'限时模拟',settings:'备份与资料'};
+const icons={home:'◷',notes:'▤',quiz:'✓',lab:'⌘',short:'✎',wrong:'↻',mock:'◴',settings:'⚙'};
+function go(next){route=next;render();window.scrollTo({top:0,behavior:'instant'});}
+function header(title,sub,badge=''){return `<div class="heading"><div><div class="eyebrow">13180 · OPERATING SYSTEMS</div><h1>${title}</h1><p>${sub}</p></div>${badge?`<span class="badge">${badge}</span>`:''}</div>`;}
+function stats(){const vals=Object.values(state.attempts),total=vals.reduce((n,a)=>n+a.n,0),right=vals.reduce((n,a)=>n+a.right,0);return{unique:vals.length,total,right,accuracy:total?Math.round(right/total*100):0};}
+function chapterOptions(value,all='全部章节'){return `<option value="all" ${value==='all'?'selected':''}>${all}</option>`+CHAPTERS.map((c,i)=>`<option value="${i}" ${String(i)===String(value)?'selected':''}>第${i+1}章 · ${c}</option>`).join('');}
+function render(){
+ $('#nav').innerHTML=Object.entries(labels).map(([k,v])=>`<button data-route="${k}" class="${route===k?'active':''}" ${route===k?'aria-current="page"':''}><span class="icon" aria-hidden="true">${icons[k]}</span>${v}${k==='wrong'&&state.wrong.length?`<span class="count">${state.wrong.length}</span>`:''}</button>`).join('');
+ $('#crumb').textContent=labels[route];
+ $('#content').innerHTML=({home:homeView,notes:notesView,quiz:quizView,lab:labView,short:shortView,wrong:wrongView,mock:mockView,settings:settingsView})[route]();
+ updateSaveStatus();updateClocks();
+}
+function homeView(){const s=stats(),completed=state.tasks.length;return header('两天，把知识变成分数。','先建立框架，再练到能独立写出来。今天从一次摸底开始。','湖北自考本科 · 两天冲刺')+`
+ <section class="hero"><div><div class="eyebrow">YOUR 48-HOUR STUDY SPRINT</div><h2>时间有限，先把能拿的分拿稳。</h2><p>概念用卡片记，算法用步骤练，简答用关键词默写。每轮练习都留下进度，下一轮从薄弱处开始。</p><button data-action="diagnostic">开始 15 题摸底 <span aria-hidden="true">↗</span></button><small>约 10 分钟 · 八章抽题 · 即时解析</small></div><div class="hero-map" aria-hidden="true"><div class="orbit"><div><div class="big">48<span style="font-size:20px">h</span></div><div class="tiny">专注当下的每一轮</div></div><span class="orbit-tag one">理解概念</span><span class="orbit-tag two">动手计算</span><span class="orbit-tag three">闭卷回忆</span></div></div></section>
+ <section class="stats"><div class="stat"><div class="stat-label">已练选择题</div><div class="stat-value">${s.unique}<span>/ ${QUESTIONS.length} 题</span></div><div class="stat-foot">覆盖八章核心概念</div></div><div class="stat"><div class="stat-label">累计答题正确率</div><div class="stat-value">${s.total?s.accuracy:'—'}<span>${s.total?'%':'待摸底'}</span></div><div class="stat-foot">${s.total} 次作答，${s.right} 次正确</div></div><div class="stat"><div class="stat-label">待巩固错题</div><div class="stat-value">${state.wrong.length}<span>题</span></div><div class="stat-foot">连续两次答对后移出</div></div><div class="stat"><div class="stat-label">已掌握速记卡</div><div class="stat-value">${state.mastered.length}<span>/ 32 张</span></div><div class="stat-foot">计算训练已完成 ${state.labCount} 次</div></div></section>
+ <div class="two-col"><section class="panel"><div class="panel-head"><h2>你的两天路线</h2><span class="tiny muted">${completed} / 10 完成</span></div><div class="tabs"><button data-action="day" data-value="0" class="${day===0?'active':''}">DAY 01 · 建立骨架</button><button data-action="day" data-value="1" class="${day===1?'active':''}">DAY 02 · 形成输出</button></div><div class="progress"><span style="width:${completed*10}%"></span></div><p class="tiny muted">时间为可平移的参考时段；每学习约50分钟休息10分钟。</p>${PLAN.slice(day*5,day*5+5).map((t,j)=>{const i=day*5+j;return `<div class="task"><input type="checkbox" data-task="${i}" aria-label="完成${t[2]}" ${state.tasks.includes(i)?'checked':''}><div class="task-body"><div class="task-time mono">${t[1]}</div><div class="task-title ${state.tasks.includes(i)?'done':''}">${t[2]}</div><p>${t[3]}</p></div><button class="task-go" data-route="${t[4]}" aria-label="前往${t[2]}">↗</button></div>`;}).join('')}</section>
+ <aside><section class="panel"><div class="panel-head"><h2>先抓这三件事</h2><span class="badge orange">复习建议</span></div>${[['01','概念对比要能说清','并发 / 并行、就绪 / 阻塞、进程 / 线程、同步 / 互斥。'],['02','计算步骤写在纸上','先列规则与已知条件，再画过程，最后算结果。'],['03','简答按关键词给出层次','定义一句 + 要点分条 + 必要解释。看懂后合上答案复述。']].map(x=>`<div class="focus-card"><div class="focus-number">${x[0]}</div><div><b>${x[1]}</b><p>${x[2]}</p></div></div>`).join('')}</section><div class="notice spaced">优先级是依据知识依赖与两天学习效率制定的建议；不代表已核实的考频或分值。题目均为原创练习。</div><button style="width:100%" data-route="lab">直接进入计算训练 →</button></aside></div>`;}
+function notesView(){return header('考点速记','每章四张。读懂后切到「闭卷回忆」，先自己说，再翻答案。','32 张原创速记卡')+`<div class="toolbar"><select id="chapter" aria-label="筛选章节">${chapterOptions(chapter)}</select><input id="note-search" placeholder="搜索：缺页、线程、死锁…" aria-label="搜索考点" value="${e(search)}"><div class="tabs"><button data-action="note-mode" data-value="read" class="${noteMode==='read'?'active':''}">阅读</button><button data-action="note-mode" data-value="recall" class="${noteMode==='recall'?'active':''}">闭卷回忆</button></div><button data-action="print" class="small">打印当前考点</button></div><div class="notes-grid">${CARDS.filter(c=>chapter==='all'||c.ch===Number(chapter)).map(c=>`<article class="note-card" data-search="${e(c.title+c.body+c.trap+c.tip)}" ${search&&!(c.title+c.body+c.trap+c.tip).includes(search)?'hidden':''}><span class="badge">${String(c.ch+1).padStart(2,'0')} · ${CHAPTERS[c.ch]}</span><h3>${c.title}</h3><div class="note-answer ${noteMode==='recall'?'hidden':''}" id="card-${c.id}"><p>${c.body}</p><div class="note-trap">易错提醒 · ${c.trap}</div><div class="note-tip">记忆线索 · ${c.tip}</div></div>${noteMode==='recall'?`<button data-action="reveal-card" data-id="${c.id}">我已尝试回忆，查看答案</button>`:''}<div class="note-actions"><span class="tiny">${c.id+1} / 32</span><button class="small ${state.mastered.includes(c.id)?'active':''}" data-action="master" data-id="${c.id}">${state.mastered.includes(c.id)?'✓ 已记住':'标记已记住'}</button></div></article>`).join('')}</div><div id="notes-empty" class="empty hidden">没有匹配考点，换个关键词试试。</div>`;}
+function prepareQuestion(q){const order=shuffle(q.options.map((_,i)=>i));return{...q,options:order.map(i=>q.options[i]),answer:order.indexOf(q.answer)};}
+function startQuiz(mode='all'){
+ let pool=QUESTIONS.filter(q=>quizChapter==='all'||q.ch===Number(quizChapter));
+ if(mode==='diagnostic')pool=shuffle(CHAPTERS.flatMap((_,ch)=>shuffle(QUESTIONS.filter(q=>q.ch===ch)).slice(0,2))).slice(0,15);
+ else if(mode==='wrong')pool=shuffle(QUESTIONS.filter(q=>state.wrong.includes(q.id)));
+ else if(mode==='random')pool=shuffle(pool);
+ if(!pool.length){toast('当前没有待复练题目');return;}
+ state.quiz={mode,items:pool.map(prepareQuestion),index:0,answers:{},done:false};persist();go(mode==='wrong'?'wrong':'quiz');
+}
+function record(qid,correct){let a=state.attempts[qid]||{n:0,right:0,streak:0};a.n++;a.right+=correct?1:0;a.streak=correct?a.streak+1:0;state.attempts[qid]=a;if(!correct&&!state.wrong.includes(qid))state.wrong.push(qid);if(correct&&a.streak>=2)state.wrong=state.wrong.filter(id=>id!==qid);}
+function quizView(){const run=state.quiz;if(!run||run.mode==='wrong')return header('选择练习','每题答完立即看解析。不要只记选项字母，试着说出理由。','64 题 · 原创单选')+`<div class="panel quiz-wrap"><h2>开始一轮练习</h2><p class="muted smalltext spaced">建议先做15题摸底，再按薄弱章节练。随机练习会打乱题目和选项。</p><div class="toolbar spaced"><select id="quiz-chapter" aria-label="练习章节">${chapterOptions(quizChapter)}</select></div><div class="tag-row"><button class="primary" data-action="start-quiz" data-value="all">按章顺序练习</button><button data-action="start-quiz" data-value="random">随机练习</button><button data-action="diagnostic">15题摸底</button></div></div>`;return activeQuizView(run);}
+function activeQuizView(run){const total=run.items.length,n=Object.keys(run.answers).length,right=Object.values(run.answers).filter(a=>a.correct).length;
+ if(run.done)return header('这一轮完成了','看懂解析后，合上答案再试一次。')+`<div class="panel quiz-wrap center"><span class="badge">${run.mode==='diagnostic'?'摸底结果':'练习结果'}</span><div class="score-circle"><b>${Math.round(right/total*100)}<small style="font-size:15px">%</small></b><span class="tiny muted">本轮正确率</span></div><p>${total}题 · 答对 ${right} 题 · 答错 ${total-right} 题</p><p class="muted smalltext">这次正确率仅反映本组原创题的表现，不是考试成绩预测。</p><div class="spaced tag-row" style="justify-content:center"><button class="primary" data-action="start-quiz" data-value="wrong">复练错题</button><button data-action="close-quiz">选择新一轮</button><button data-route="notes">回看考点</button></div></div><div class="weak-list spaced">${CHAPTERS.map((c,ch)=>{const list=run.items.filter(q=>q.ch===ch);if(!list.length)return '';const r=list.filter(q=>run.answers[q.id]?.correct).length;return `<div class="weak-item"><b>${ch+1}. ${c}</b><p>${list.length}题中答对 ${r} 题</p><div class="progress"><span style="width:${r/list.length*100}%"></span></div><button class="small" data-action="learn-chapter" data-id="${ch}">回看这一章</button></div>`;}).join('')}</div>`;
+ const q=run.items[run.index],a=run.answers[q.id];return header(run.mode==='diagnostic'?'15题摸底':run.mode==='wrong'?'错题复练':'选择练习','先判断，再看解析。答错的题会自动进入错题本。')+`<div class="quiz-wrap"><div class="quiz-meta"><span>第 ${run.index+1} / ${total} 题 · 第${q.ch+1}章 ${CHAPTERS[q.ch]}</span><button class="ghost tiny" data-action="close-quiz">结束本轮</button></div><div class="progress"><span style="width:${n/total*100}%"></span></div><section class="panel"><span class="badge">原创单选 · 单击选项提交</span><h2 class="question-text">${q.q}</h2><div class="options">${q.options.map((o,i)=>`<button class="option ${a?(i===q.answer?'correct':i===a.value?'incorrect':''):''}" data-action="answer" data-value="${i}" ${a?'disabled':''}><span class="letter">${'ABCD'[i]}</span><span>${e(o)}</span></button>`).join('')}</div>${a?`<div class="feedback ${a.correct?'':'bad'}" role="status"><b>${a.correct?'✓ 回答正确':'再巩固一下'} · 正确答案 ${'ABCD'[q.answer]}</b><p>${q.explain}</p></div>`:''}<div class="quiz-bottom"><span class="tiny muted">快捷键 A–D / 1–4 选答案<br>Enter 下一题</span><button class="primary" data-action="next-question" ${a?'':'disabled'}>${run.index===total-1?'查看本轮结果':'下一题 →'}</button></div></section></div>`;
+}
+function wrongView(){if(state.quiz?.mode==='wrong')return activeQuizView(state.quiz);const list=QUESTIONS.filter(q=>state.wrong.includes(q.id));return header('错题复练','答错自动收录；同题连续两次答对后移出。把理由说清，才算会了。',`${list.length} 题待巩固`)+(list.length?`<div class="toolbar"><button class="primary" data-action="start-quiz" data-value="wrong">开始复练 ${list.length} 题</button></div><div class="weak-list">${list.map(q=>`<div class="weak-item"><span class="badge">第${q.ch+1}章</span><h3 style="font-size:15px;margin:10px 0">${q.q}</h3><p>累计 ${state.attempts[q.id].n} 次作答 · 连续答对 ${state.attempts[q.id].streak} / 2</p><button class="small spaced" data-action="learn-chapter" data-id="${q.ch}">复习相关章节</button></div>`).join('')}</div>`:`<div class="empty"><h3>暂时没有待巩固错题</h3><p class="muted smalltext">做一轮摸底，找到值得投入时间的地方。</p><button class="primary spaced" data-action="diagnostic">开始摸底</button></div>`);}
+function shortView(){return header('简答默写','先在输入框闭卷作答，再展开要点自评。这里的勾选代表你的自评。','16 道 · 按点组织答案')+`<div class="toolbar"><select id="short-chapter" aria-label="简答章节">${chapterOptions(shortChapter)}</select><button data-action="print" class="small">打印当前简答</button></div>`+SHORTS.filter(s=>shortChapter==='all'||s.ch===Number(shortChapter)).map(s=>`<section class="panel short-card"><span class="badge">第${s.ch+1}章 · 第${Number(s.id.slice(1))+1}题</span><h3>${s.q}</h3><textarea class="answer-input" data-short="${s.id}" placeholder="先写定义，再分条列关键词。写完后再展开参考要点。" aria-label="${s.q}">${e(state.shortDraft[s.id]||'')}</textarea><div class="spaced"><button class="small" data-action="toggle-short" data-id="${s.id}">${state.shortOpen.includes(s.id)?'收起参考要点':'已尝试作答，展开参考要点'}</button></div>${state.shortOpen.includes(s.id)?`<div class="rubric"><p class="tiny muted">对照自己的答案勾选覆盖点；合理同义表述也可。以下不代表官方评分细则。</p>${s.points.map((p,i)=>`<label><input type="checkbox" data-rubric="${s.id}" data-index="${i}" ${(state.shortChecks[s.id]||[]).includes(i)?'checked':''}><span>${p}</span></label>`).join('')}<div class="tip">答题提醒 · ${s.tip}</div></div>`:''}</section>`).join('');}
+const labNames={schedule:'进程调度',address:'分页地址',paging:'页面置换',banker:'银行家算法',disk:'磁盘调度'};
+function table(head,rows){return `<div class="table-scroll"><table><thead><tr>${head.map(h=>`<th>${h}</th>`).join('')}</tr></thead><tbody>${rows.map(r=>`<tr>${r.map(v=>`<td>${v}</td>`).join('')}</tr>`).join('')}</tbody></table></div>`;}
+function promptLab(l){if(l.kind==='schedule')return `<p class="lab-prompt">采用 <b>${l.algo}</b>${l.algo==='RR'?`，时间片 ${l.quantum}`:''}。忽略切换开销、无I/O，同到达时刻按A→D排序。${l.algo==='RR'?'时间片边界新到达者先入队，刚运行者后回队。':''}求<b>平均周转时间</b>（保留两位小数）。</p>${table(['进程','到达时刻','服务时间'],l.jobs.map(p=>[p.name,p.arrival,p.burst]))}`;
+ if(l.kind==='address')return `<p class="lab-prompt">按字节编址，页大小 <b>${l.size} B</b>，逻辑地址 <b>${l.address}</b>。页号从0开始。页表给出逻辑页 <b>${l.page}</b> 驻留于页框 <b>${l.frame}</b>。地址合法、页面已在主存。求<b>物理地址</b>（十进制）。</p>`;
+ if(l.kind==='paging')return `<p class="lab-prompt">采用 <b>${l.algo}</b>，有 <b>${l.capacity}</b> 个初始为空的页框。页面引用串如下。求<b>缺页次数</b>，包括初次装入。</p><div class="formula">${l.refs.join(' → ')}</div>`;
+ if(l.kind==='banker')return `<p class="lab-prompt">系统有资源A、B，当前 Available = <b>(${l.available.join(', ')})</b>。下表每个向量依次为A、B数量。判断<b>当前状态是否安全</b>，并在纸上写出安全序列或说明不能继续的原因。</p>${table(['进程','Allocation','Max'],l.allocation.map((r,i)=>['P'+i,`(${r.join(', ')})`,`(${l.max[i].join(', ')})`]))}`;
+ return `<p class="lab-prompt">采用 <b>${l.algo}</b>，磁道范围 <b>0–${l.maxTrack}</b>，磁头初始位于 <b>${l.head}</b>，初始方向<b>${l.direction==='up'?'增大':'减小'}</b>。所有请求均已到达。求最后一个请求完成前的<b>总移动磁道数</b>。SSTF等距时选较小磁道；SCAN反向前到达端点，LOOK在最远请求处反向；请求已全部完成即停止。</p><div class="formula">请求顺序：${l.requests.join('，')}</div>`;
+}
+function solutionLab(l){const s=solveLab(l);
+ if(l.kind==='schedule')return `<h3>先画甘特图，再计算</h3><div class="gantt">${s.segments.map(p=>`<div class="gantt-block" style="flex-grow:${p.end-p.start}" data-end="${p.end}">${p.name}<small>${p.start}</small></div>`).join('')}</div>${table(['进程','完成','周转T','带权T/服务','等待','响应'],s.rows.map(p=>[p.name,p.finish,p.turn,p.weight.toFixed(2),p.wait,p.response]))}<div class="formula">平均周转 = (${s.rows.map(p=>p.turn).join(' + ')}) / ${s.rows.length} = ${s.average.toFixed(2)}<br>平均带权周转 = ${s.weighted.toFixed(2)}</div><p class="smalltext">完成时刻从甘特图读出；周转=完成−到达。${l.algo==='SJF'?'只比较当前已到达、尚未完成的进程。':l.algo==='SRTF'?'每到达一个更短的任务都需重新判断是否抢占。':l.algo==='RR'?'只在完成或用完时间片时换队列，按题目约定处理边界到达。':'按到达时刻排队，CPU空闲时等到下一个进程到达。'}</p>`;
+ if(l.kind==='address')return `<h3>三步：拆地址 → 查页表 → 拼地址</h3><div class="formula">页号 p = ⌊${l.address} / ${l.size}⌋ = ${s.page}<br>偏移 d = ${l.address} mod ${l.size} = ${s.offset}<br>查页表：页 ${s.page} → 页框 ${l.frame}<br>物理地址 = ${l.frame} × ${l.size} + ${s.offset} = ${s.physical}</div><p class="smalltext">偏移保持不变；不要把页号直接当页框号。</p>`;
+ if(l.kind==='paging')return `<h3>逐次访问的页框变化</h3><p class="tiny muted">浅橙色为缺页；“换出”一行指出淘汰页。格子从上到下对应固定页框位置。</p><div class="step-grid">${s.steps.map(x=>`<div class="page-step ${x.fault?'fault':''}"><b>${x.p}</b>${Array.from({length:l.capacity},(_,i)=>`<div class="frame">${x.frames[i]??'—'}</div>`).join('')}<small>${x.fault?'缺页':'命中'}<br>换出${x.out??'—'}</small></div>`).join('')}</div><div class="formula">缺页 ${s.faults} 次 / 访问 ${l.refs.length} 次<br>缺页率 = ${(s.faults/l.refs.length*100).toFixed(2)}%</div><p class="smalltext">${l.algo==='FIFO'?'命中不更新装入次序，淘汰最早装入的页面。':l.algo==='LRU'?'每次访问，包括命中，都更新最近访问时间。': '向后看未来引用；若某页不再出现，优先淘汰它。多个页面未来都不出现时可以任选。'}</p>`;
+ if(l.kind==='banker')return `<h3>当前状态${s.safe?'安全':'不安全'}</h3>${table(['进程','Need = Max − Allocation'],s.need.map((r,i)=>['P'+i,`(${r.join(', ')})`]))}<div class="bank-seq">初始 Work = (${l.available.join(', ')})</div>${s.steps.map(x=>`<div class="bank-seq">Need[P${x.i}] = (${s.need[x.i].join(', ')}) ≤ Work (${x.before.join(', ')})<br>P${x.i}完成，释放 Allocation (${l.allocation[x.i].join(', ')})，Work → (${x.after.join(', ')})</div>`).join('')}<div class="formula">${s.safe?'一个可行安全序列：'+s.sequence.map(i=>'P'+i).join(' → '):'剩余 '+s.unfinished.map(i=>'P'+i).join('、')+' 均不能满足 Need ≤ Work。'}</div><p class="smalltext">${s.safe?'安全序列可能不唯一；你写的序列只要逐步满足每一维资源需求，也正确。':'此状态不能保证所有进程完成；“不安全”不等于此刻已经发生死锁。'}完成后释放的是Allocation。</p>`;
+ return `<h3>先确定服务路径，再逐段相加</h3><div class="formula">${[l.head,...s.order].join(' → ')}</div>${table(['起点','终点','本段移动','累计'],s.steps.map(x=>[x.from,x.to,x.distance,x.total]))}<p class="smalltext">总移动 <b>${s.total}</b> 磁道。${l.algo==='SCAN'?'若尚有反方向请求，需计入到磁盘端点再折返的距离。':l.algo==='LOOK'?'只到该方向最远请求，不必走到物理端点。':l.algo==='SSTF'?'每完成一个请求，都从新的磁头位置重新寻找最近请求。':'严格保持请求顺序，不按距离重新排序。'}</p>`;
+}
+function labInput(l,id,value=''){return l.kind==='banker'?`<select id="${id}" aria-label="安全性判断"><option value="">请选择判断</option><option ${value==='安全'?'selected':''}>安全</option><option ${value==='不安全'?'selected':''}>不安全</option></select>`:`<input id="${id}" type="number" step="any" inputmode="decimal" placeholder="${l.kind==='schedule'?'平均周转时间，两位小数':'填入计算结果'}" aria-label="计算结果" value="${e(value)}">`;}
+function labView(){const algos=lab.kind==='schedule'?['FCFS','SJF','SRTF','RR']:lab.kind==='paging'?['FIFO','LRU','OPT']:lab.kind==='disk'?['FCFS','SSTF','SCAN','LOOK']:[];return header('计算训练','请拿一张纸。先列过程，再填结果；换一组数据检查是否真的掌握。','自动出题 · 五类算法')+`<div class="lab-types">${Object.entries(labNames).map(([k,n],i)=>`<button class="${lab.kind===k?'active':''}" data-action="lab-kind" data-value="${k}"><span aria-hidden="true">${['▥','↳','▦','⇄','◎'][i]}</span>${n}</button>`).join('')}</div><section class="panel"><div class="panel-head"><h2>${labNames[lab.kind]}</h2><div class="tag-row">${algos.length?`<select id="lab-algo" aria-label="选择算法" style="max-width:115px">${algos.map(a=>`<option ${lab.algo===a?'selected':''}>${a}</option>`).join('')}</select>`:''}<button class="small" data-action="new-lab">换一题 ↻</button></div></div>${promptLab(lab)}<div class="lab-answer">${labInput(lab,'lab-value',labResult?.value??'')}<button class="primary" data-action="check-lab" ${labResult?'disabled':''}>提交并看步骤</button><button data-action="reveal-lab" ${labResult?'disabled':''}>暂时不会，学习步骤</button></div>${labResult?`<div class="feedback ${labResult.correct?'':'bad'}"><b>${labResult.skipped?'先跟着过程做一遍':labResult.correct?'✓ 结果正确，再核对过程':'结果有误，检查下面的关键步骤'}</b><p>参考结果：${typeof labAnswer(lab)==='number'&&lab.kind==='schedule'?labAnswer(lab).toFixed(2):labAnswer(lab)}${lab.kind==='banker'?'；安全序列请自行核对逐步资源变化。':''}</p></div><div class="solution">${solutionLab(lab)}</div>`:''}</section>`;}
+function newMock(){const questions=CHAPTERS.flatMap((_,ch)=>shuffle(QUESTIONS.filter(q=>q.ch===ch)).slice(0,ch<4?3:2));state.mock={started:Date.now(),deadline:Date.now()+90*60000,questions:shuffle(questions).map(prepareQuestion),shorts:shuffle(SHORTS).slice(0,4).map(s=>s.id),labs:shuffle(['schedule','address','paging','banker','disk']).slice(0,4).map(k=>makeLab(k)),mc:{},text:{},calcs:{},self:{},submitted:false};persist();go('mock');}
+function mockScore(m){let mc=m.questions.filter(q=>m.mc[q.id]===q.answer).length*2,calc=m.labs.reduce((n,l,i)=>n+(labCorrect(l,m.calcs[i]??'')?10:0),0),short=Object.values(m.self).reduce((n,v)=>n+Number(v),0);return{mc,calc,short,total:mc+calc+short,assessed:Object.keys(m.self).length};}
+function submitMock(automatic=false){if(!state.mock||state.mock.submitted)return;state.mock.submitted=true;state.mock.submittedAt=Date.now();state.mock.questions.forEach(q=>record(q.id,state.mock.mc[q.id]===q.answer));persist();render();window.scrollTo({top:0});toast(automatic?'模拟计时结束，已自动交卷':'已交卷，主观题请对照要点自评');}
+function mockView(){const m=state.mock;if(!m)return header('90分钟，自测一次','用一套原创综合卷检验输出。题型、时长和分值为训练设计。','自编模拟 · 非官方试卷')+`<section class="panel quiz-wrap"><h2>闭卷做一次，找出最后的薄弱点。</h2><p class="smalltext muted spaced">共100分：20道单选×2分 + 4道计算×10分 + 4道简答×5分。90分钟后自动交卷，关闭页面后计时继续；再次打开会恢复。</p><div class="notice spaced">单选与计算结果自动判定；计算过程自行核对，练习计分只按结果。简答对照要点自评。正式考试题型、分值与要求以实际试卷为准。</div><button class="primary" data-action="new-mock">开始90分钟模拟</button></section>`;
+ if(m.submitted)return mockResultView(m);
+ const answered=Object.keys(m.mc).length+Object.values(m.calcs).filter(x=>String(x).trim()).length+Object.values(m.text).filter(x=>x.trim()).length;
+ return header('限时模拟进行中','先易后难。遇到卡题先跳过，最后回头检查。')+`<div class="exam-bar"><div><span class="tiny muted">剩余时间</span><div class="exam-clock" id="mock-clock"></div></div><span class="smalltext">已填写 ${answered} / 28 题 <span class="tiny muted">（切换页后更新）</span></span><button class="primary small" data-action="submit-mock">交卷并查看解析</button></div><section class="panel"><h2>一、单项选择题 <span class="muted smalltext">20 × 2分</span></h2>${m.questions.map((q,i)=>`<div class="mock-q"><h3>${i+1}. ${q.q}</h3><div class="mock-options">${q.options.map((o,j)=>`<label><input type="radio" name="mock-${q.id}" data-mock-q="${q.id}" value="${j}" ${m.mc[q.id]===j?'checked':''}>${'ABCD'[j]}. ${e(o)}</label>`).join('')}</div></div>`).join('')}</section><section class="panel mock-section"><h2>二、计算与分析 <span class="muted smalltext">4 × 10分</span></h2>${m.labs.map((l,i)=>`<div class="mock-q"><h3>${i+21}. ${labNames[l.kind]}</h3>${promptLab(l)}<div class="lab-answer">${labInput(l,'mock-calc-'+i,m.calcs[i]??'')}</div></div>`).join('')}</section><section class="panel mock-section"><h2>三、简答题 <span class="muted smalltext">4 × 5分，自评</span></h2>${m.shorts.map((id,i)=>{const s=SHORTS.find(x=>x.id===id);return `<div class="mock-q"><h3>${i+25}. ${s.q}</h3><textarea class="answer-input" data-mock-short="${id}" aria-label="${s.q}" placeholder="在此闭卷作答…">${e(m.text[id]||'')}</textarea></div>`;}).join('')}</section><div class="center spaced"><button class="primary" data-action="submit-mock">完成作答，提交试卷</button></div>`;
+}
+function mockResultView(m){const s=mockScore(m);return header('模拟已交卷','先核对计算过程，再给简答打分。分数只是本套练习的反馈。')+`<section class="panel"><div class="heading"><div><span class="badge">${s.assessed===4?'含主观自评的总分':'客观部分成绩 · 简答待自评'}</span><h1 style="font-size:39px;margin-top:9px">${s.assessed===4?s.total:s.mc+s.calc}<span style="font-size:17px;color:var(--muted)"> / ${s.assessed===4?100:80}</span></h1><p>单选 ${s.mc}/40 · 计算 ${s.calc}/40 · 简答 ${s.short}/20（已评 ${s.assessed}/4）</p></div><button data-action="new-mock">重新抽一套</button></div><p class="tiny muted">用时 ${Math.min(90,Math.ceil((m.submittedAt-m.started)/60000))} 分钟。未作答单选已计为错误并加入错题本。简答自评分不代表官方评分。</p></section><section class="panel spaced"><h2>选择题解析</h2>${m.questions.map((q,i)=>`<div class="mock-q"><h3>${i+1}. ${q.q}</h3><p class="smalltext ${m.mc[q.id]===q.answer?'':'danger'}">你的答案：${m.mc[q.id]===undefined?'未答':'ABCD'[m.mc[q.id]]+' · '+e(q.options[m.mc[q.id]])}　正确：${'ABCD'[q.answer]} · ${e(q.options[q.answer])}</p><p class="smalltext muted">${q.explain}</p></div>`).join('')}</section><section class="panel spaced"><h2>计算题解析</h2>${m.labs.map((l,i)=>`<div class="mock-q"><h3>${i+21}. ${labNames[l.kind]} · ${labCorrect(l,m.calcs[i]??'')?'10':'0'}分</h3>${promptLab(l)}<p class="smalltext">你的结果：${e(m.calcs[i]??'未答')}</p><div class="solution">${solutionLab(l)}</div></div>`).join('')}</section><section class="panel spaced"><h2>简答自评</h2><p class="muted smalltext">要点供对照；按完整性自行给0–5分。每题满分5分，不按要点数量机械累加。</p>${m.shorts.map((id,i)=>{const q=SHORTS.find(x=>x.id===id);return `<div class="mock-q"><h3>${i+25}. ${q.q}</h3><div class="note-tip" style="white-space:pre-wrap">${e(m.text[id]||'未作答')}</div><ol class="smalltext">${q.points.map(p=>`<li>${p}</li>`).join('')}</ol><div class="toolbar"><label>本题自评 <select data-self="${id}" aria-label="${q.q} 自评分"><option value="">待自评</option>${[0,1,2,3,4,5].map(v=>`<option value="${v}" ${m.self[id]===v?'selected':''}>${v}分</option>`).join('')}</select></label></div></div>`;}).join('')}</section>`;}
+function settingsView(){return header('备份与资料','单文件、离线可用。建议导出一次备份，避免浏览器清理造成进度丢失。')+`<div class="settings"><section class="panel"><h2>你的学习记录</h2><p class="muted spaced">选择题记录、错题、默写草稿、模拟卷和任务勾选保存在当前设备的当前浏览器。不同浏览器、文件打开方式与在线预览地址之间不会自动同步。</p><div class="tag-row spaced"><button class="primary" data-action="export">导出进度 JSON</button><button data-action="import">导入进度</button><button data-action="download-html">下载离线HTML</button></div><input type="file" id="import-file" accept=".json,application/json" hidden><p class="tiny muted spaced">导入会覆盖当前记录。考试计时会继续按原截止时间运行。若浏览器禁止本地保存，仍可练习并手动导出。</p></section><section class="panel"><h2>课程核对与资料来源</h2><ul class="sources"><li>课程：13180《操作系统》。教材核对：陈向群、孙卫真，机械工业出版社，2023年版；ISBN 978-7-111-73898-5。</li><li><a href="https://www.cmpedu.com/books/book/5607989.htm" target="_blank" rel="noopener noreferrer">机械工业出版社：教材介绍与八章目录</a>。本页按目录覆盖八章，不是对完整考试大纲的逐项复刻。</li><li><a href="https://ce.hbut.edu.cn/info/1037/2030.htm" target="_blank" rel="noopener noreferrer">湖北工业大学继续教育学院：2026年湖北自考开考安排与教材附件</a>。课程教材以当次省考试院公布目录为准。</li><li><a href="https://shjygl.xjtu.edu.cn/fujian12026niangaodengjiaoyuzixuekaoshiquanguotongkaokechengshiyongkaoshidagangjiaocaimulu.pdf" target="_blank" rel="noopener noreferrer">2026年全国统考课程使用大纲、教材目录（高校发布附件）</a>：13180教材与作者信息。</li><li><a href="https://pages.cs.wisc.edu/~remzi/OSTEP/" target="_blank" rel="noopener noreferrer">Operating Systems: Three Easy Pieces</a>：可进一步查阅的公开原理教材，不是本课程指定教材。</li></ul><div class="notice">核对日期：2026年10月22日。64道选择、32张卡片、16道简答与计算题均为原创训练。未核验历年真题考频；未标记任何内容为“必考”。模拟结构是学习工具自定。</div></section><section class="panel"><h2>考前最后30分钟</h2><p class="spaced">只做提取：三态转换、时间公式、分页公式、三种置换、P/V顺序、死锁四条件。看看自己的错题理由。以准考证确认考试日期、场次、地点和考试用品要求。</p><div class="formula">T = 完成 − 到达　 W = T / 服务<br>页号 = ⌊A/S⌋　 偏移 = A mod S<br>物理地址 = 页框×S + 偏移<br>Need = Max − Allocation<br>empty=N，full=0，mutex=1</div></section><section class="panel"><h3>重置学习记录</h3><p class="muted smalltext spaced">建议先导出进度。清空会删除错题、草稿和模拟卷。</p><button class="small danger spaced" data-action="reset">清空此浏览器记录</button></section></div>`;}
+function updateClocks(){if(timerRunning)timerRemaining=Math.max(0,Math.ceil((timerUntil-Date.now())/1000));const time=s=>`${String(Math.floor(s/60)).padStart(2,'0')}:${String(s%60).padStart(2,'0')}`;if($('#focus-clock'))$('#focus-clock').textContent=time(timerRemaining);if($('#timer-toggle'))$('#timer-toggle').textContent=timerRunning?'暂停':'开始';const m=state.mock;if(m&&!m.submitted){const seconds=Math.max(0,Math.ceil((m.deadline-Date.now())/1000));if($('#mock-clock'))$('#mock-clock').textContent=time(seconds);if(!seconds)submitMock(true);}if(timerRunning&&!timerRemaining){timerRunning=false;state.focusSeconds+=1500;persist();toast('这一轮25分钟结束，休息5分钟，再继续。');$('#timer-toggle').textContent='开始';}}
+function download(name,type,body){const url=URL.createObjectURL(new Blob([body],{type})),a=document.createElement('a');a.href=url;a.download=name;a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);}
+function validateImport(v){
+ if(!v||v.version!==1||!v.attempts||!Array.isArray(v.wrong)||!Array.isArray(v.mastered)||!Array.isArray(v.tasks))throw Error('format');
+ const clean=fresh(),validQ=new Set(QUESTIONS.map(q=>q.id));
+ for(const [id,a]of Object.entries(v.attempts)){if(validQ.has(id)&&[a.n,a.right,a.streak].every(n=>Number.isInteger(n)&&n>=0)&&a.right<=a.n)clean.attempts[id]={n:a.n,right:a.right,streak:a.streak};}
+ clean.wrong=[...new Set(v.wrong.filter(id=>validQ.has(id)&&clean.attempts[id]))];clean.mastered=[...new Set(v.mastered.filter(n=>Number.isInteger(n)&&n>=0&&n<32))];clean.tasks=[...new Set(v.tasks.filter(n=>Number.isInteger(n)&&n>=0&&n<10))];
+ for(const s of SHORTS){if(typeof v.shortDraft?.[s.id]==='string')clean.shortDraft[s.id]=v.shortDraft[s.id].slice(0,50000);if(Array.isArray(v.shortChecks?.[s.id]))clean.shortChecks[s.id]=v.shortChecks[s.id].filter(i=>Number.isInteger(i)&&i>=0&&i<s.points.length);}
+ clean.shortOpen=Array.isArray(v.shortOpen)?v.shortOpen.filter(id=>SHORTS.some(s=>s.id===id)):[];
+ for(const k of ['labCount','labRight','focusSeconds'])if(Number.isFinite(v[k])&&v[k]>=0)clean[k]=v[k];
+ // 运行态含题目内容，只接受与本版本题库相同的题目；计算实例须先通过结构检查。
+ const qValid=q=>{const base=QUESTIONS.find(x=>x.id===q.id);return base&&q.ch===base.ch&&q.q===base.q&&Array.isArray(q.options)&&q.options.length===4&&new Set(q.options).size===4&&q.options.every(o=>base.options.includes(o))&&q.options[q.answer]===base.options[base.answer]&&q.explain===base.explain;};
+ if(v.quiz&&Array.isArray(v.quiz.items)&&v.quiz.items.length<=64&&v.quiz.items.every(qValid)&&Number.isInteger(v.quiz.index)&&v.quiz.index>=0&&v.quiz.index<v.quiz.items.length&&['all','random','diagnostic','wrong'].includes(v.quiz.mode)){
+  const run={mode:v.quiz.mode,items:v.quiz.items,index:v.quiz.index,answers:{},done:!!v.quiz.done};for(const q of run.items){const a=v.quiz.answers?.[q.id];if(a&&Number.isInteger(a.value)&&a.value>=0&&a.value<4)run.answers[q.id]={value:a.value,correct:a.value===q.answer};}clean.quiz=run;
+ }
+ const int=(x,a,b)=>Number.isInteger(x)&&x>=a&&x<=b,labValid=l=>{if(!l||!Object.keys(labNames).includes(l.kind))return false;if(l.kind==='address')return int(l.size,512,4096)&&(l.size&(l.size-1))===0&&int(l.page,1,7)&&int(l.frame,8,24)&&int(l.offset,0,l.size-1)&&l.address===l.page*l.size+l.offset;if(l.kind==='schedule')return ['FCFS','SJF','SRTF','RR'].includes(l.algo)&&l.quantum===2&&Array.isArray(l.jobs)&&l.jobs.length===4&&l.jobs.every((p,i)=>p.name==='ABCD'[i]&&int(p.arrival,0,5)&&int(p.burst,1,7));if(l.kind==='paging')return ['FIFO','LRU','OPT'].includes(l.algo)&&l.capacity===3&&Array.isArray(l.refs)&&l.refs.length===12&&l.refs.every(p=>int(p,0,5));if(l.kind==='banker')return Array.isArray(l.available)&&l.available.length===2&&l.available.every(x=>int(x,0,3))&&Array.isArray(l.allocation)&&l.allocation.length===3&&Array.isArray(l.max)&&l.max.length===3&&l.allocation.every((r,i)=>Array.isArray(r)&&r.length===2&&r.every(x=>int(x,0,3))&&Array.isArray(l.max[i])&&l.max[i].length===2&&l.max[i].every((x,j)=>int(x,r[j],r[j]+4)));return ['FCFS','SSTF','SCAN','LOOK'].includes(l.algo)&&['up','down'].includes(l.direction)&&l.maxTrack===199&&int(l.head,35,165)&&Array.isArray(l.requests)&&l.requests.length===6&&l.requests.every(p=>int(p,0,199));};
+ const m=v.mock;if(m&&Array.isArray(m.questions)&&m.questions.length===20&&m.questions.every(qValid)&&Array.isArray(m.labs)&&m.labs.length===4&&m.labs.every(labValid)&&Array.isArray(m.shorts)&&m.shorts.length===4&&m.shorts.every(id=>SHORTS.some(s=>s.id===id))&&Number.isFinite(m.started)&&Number.isFinite(m.deadline)&&m.deadline-m.started===5400000){
+  clean.mock={started:m.started,deadline:m.deadline,questions:m.questions,labs:m.labs,shorts:m.shorts,mc:{},calcs:{},text:{},self:{},submitted:!!m.submitted,submittedAt:Number.isFinite(m.submittedAt)?m.submittedAt:m.deadline};
+  for(const q of m.questions)if(int(m.mc?.[q.id],0,3))clean.mock.mc[q.id]=m.mc[q.id];for(let i=0;i<4;i++)if(['string','number'].includes(typeof m.calcs?.[i]))clean.mock.calcs[i]=String(m.calcs[i]).slice(0,100);
+  for(const id of m.shorts){if(typeof m.text?.[id]==='string')clean.mock.text[id]=m.text[id].slice(0,50000);if(int(m.self?.[id],0,5))clean.mock.self[id]=m.self[id];}
+ }
+ return clean;
+}
+document.addEventListener('click',event=>{
+ const b=event.target.closest('button');if(!b||b.disabled)return;if(b.dataset.route){go(b.dataset.route);return;}const a=b.dataset.action,v=b.dataset.value,id=b.dataset.id;
+ if(a==='day'){day=Number(v);render();}
+ if(a==='diagnostic'||a==='start-quiz'){if(state.quiz&&!state.quiz.done&&a==='diagnostic'&&!confirm('开始摸底会替换尚未结束的本轮练习。已作答记录保留。继续？'))return;startQuiz(a==='diagnostic'?'diagnostic':v);}
+ if(a==='answer'){const run=state.quiz,q=run?.items[run.index];if(!q||run.answers[q.id])return;const value=Number(v),correct=value===q.answer;run.answers[q.id]={value,correct};record(q.id,correct);persist();render();}
+ if(a==='next-question'){if(!state.quiz.answers[state.quiz.items[state.quiz.index].id])return;if(state.quiz.index===state.quiz.items.length-1)state.quiz.done=true;else state.quiz.index++;persist();render();}
+ if(a==='close-quiz'){state.quiz=null;persist();go('quiz');}
+ if(a==='learn-chapter'){chapter=Number(id);search='';go('notes');}
+ if(a==='note-mode'){noteMode=v;render();}
+ if(a==='reveal-card'){$('#card-'+id).classList.remove('hidden');b.remove();}
+ if(a==='master'){const n=Number(id);state.mastered=state.mastered.includes(n)?state.mastered.filter(x=>x!==n):[...state.mastered,n];persist();b.classList.toggle('active',state.mastered.includes(n));b.textContent=state.mastered.includes(n)?'✓ 已记住':'标记已记住';}
+ if(a==='toggle-short'){state.shortOpen=state.shortOpen.includes(id)?state.shortOpen.filter(x=>x!==id):[...state.shortOpen,id];persist();const y=window.scrollY;render();window.scrollTo(0,y);}
+ if(a==='lab-kind'||a==='new-lab'){lab=makeLab(a==='lab-kind'?v:lab.kind,a==='new-lab'?lab.algo:undefined);labResult=null;render();}
+ if(a==='check-lab'||a==='reveal-lab'){const value=$('#lab-value').value;if(a==='check-lab'&&!String(value).trim()){toast('先填写结果，再提交');return;}const skipped=a==='reveal-lab',correct=!skipped&&labCorrect(lab,value);labResult={value,correct,skipped};if(!skipped){state.labCount++;if(correct)state.labRight++;persist();}render();}
+ if(a==='new-mock'){if(state.mock&&!confirm('重新抽卷将替换已有模拟卷；学习记录保留。继续？'))return;newMock();}
+ if(a==='submit-mock'){if(confirm('交卷后将显示解析，不能再修改答案。确认交卷？'))submitMock();}
+ if(a==='timer-toggle'){if(timerRunning){timerRemaining=Math.max(0,Math.ceil((timerUntil-Date.now())/1000));timerRunning=false;}else{if(timerRemaining<=0)timerRemaining=1500;timerUntil=Date.now()+timerRemaining*1000;timerRunning=true;}updateClocks();}
+ if(a==='timer-reset'){timerRunning=false;timerRemaining=1500;updateClocks();}
+ if(a==='print')window.print();
+ if(a==='export'){download('13180-学习进度-'+new Date().toISOString().slice(0,10)+'.json','application/json',JSON.stringify(state,null,2));toast('进度已导出');}
+ if(a==='import')$('#import-file').click();
+ if(a==='download-html')download('13180操作系统-两天冲刺.html','text/html;charset=utf-8',HTML_SOURCE);
+ if(a==='reset'){if(confirm('确定清空所有学习记录、草稿和模拟卷？建议先导出备份。')){state=fresh();persist();go('home');toast('学习记录已清空');}}
 });
-
-function getExp(q){
-  const map = {
-    q1:'并发与共享互为存在条件，是 OS 最基本的两个特征。',
-    q2:'阻塞→就绪是被动唤醒，必须先进入就绪队列等待调度，不能直接运行。',
-    q3:'互斥信号量 mutex 初值为 1，表示一次只允许一个进程进入临界区；同步信号量初值为资源数。',
-    q4:'死锁必要条件：互斥、占有且等待、不可剥夺、循环等待。时间片轮转是调度算法，与死锁无关。',
-    q5:'SJF 短作业优先平均等待时间最短，但可能饿死长作业。',
-    q6:'分页固定大小→最后一页可能装不满→内部碎片；分段不定长→段之间产生小空间→外部碎片。',
-    q7:'8448 ÷ 4096 = 2（页号），8448 mod 4096 = 256（偏移）。记住：整除取页号，取余得偏移。',
-    q8:'FIFO 有 Belady 异常：页框从 3 增到 4 时缺页次数反而可能增多。LRU/OPT 属于栈式算法，无此异常。',
-    q9:'抖动（颠簸/Thrashing）：缺页率过高，CPU 忙于页面换入换出，几乎不做有效工作。',
-    q10:'位示图：每一位对应一个盘块，0/1 表示空闲/占用。',
-    q11:'缓冲技术的核心目的：缓和 CPU 与 I/O 速度不匹配，减少中断次数。',
-    q12:'SPOOLing 用磁盘上的输入/输出井模拟脱机技术，把独占设备（打印机）变成可共享的虚拟设备。'
-  };
-  const key = q.querySelector('input').name;
-  return map[key] ? ' 解析：'+map[key] : '';
-}
-
-// 填空题
-function checkFill(btn){
-  const q = btn.closest('.q');
-  if(q.dataset.locked) return;
-  q.dataset.locked = 1;
-  doneCount++;
-  const input = q.querySelector('.fill-input');
-  const val = input.value.trim().replace(/\s/g,'');
-  const std = q.dataset.fillAns.replace(/\s/g,'');
-  const ok = val !== '' && (val === std || std.indexOf(val) !== -1 || val.indexOf(std) !== -1);
-  if(ok){ score++; } else { wrongSet.add(q.querySelector('.tag').nextElementSibling.textContent.trim().slice(0,2)); }
-  const box = q.querySelector('.ans');
-  box.style.display='block';
-  box.className = 'ans ' + (ok?'right':'wrong');
-  box.textContent = (ok?'✔ 正确。':'✘ 标准答案：'+std+'。你填的是"'+(input.value.trim()||'空')+'"。');
-  updateBar();
-}
-
-// 判断题
-function judge(btn, userAns){
-  const q = btn.closest('.q');
-  if(q.dataset.locked) return;
-  q.dataset.locked = 1;
-  doneCount++;
-  const ok = userAns === q.dataset.ans;
-  if(ok){ score++; } else { wrongSet.add(q.querySelector('.tag').nextElementSibling.textContent.trim().slice(0,2)); }
-  const box = q.querySelector('.ans');
-  box.style.display='block';
-  box.className = 'ans ' + (ok?'right':'wrong');
-  box.textContent = (ok?'✔ 正确。':'✘ 本题说法错误。') + ' 解析：P、V 操作顺序是有讲究的——P 操作先于对应的 V 操作执行才能保证正确性；若 V 提前、P 随意放置，会破坏互斥/同步逻辑，甚至引发死锁。';
-  updateBar();
-}
-</script>
-</body>
-</html>
+document.addEventListener('input',event=>{const el=event.target;
+ if(el.id==='note-search'){search=el.value;let count=0;document.querySelectorAll('[data-search]').forEach(c=>{c.hidden=!c.dataset.search.includes(search);if(!c.hidden)count++;});$('#notes-empty').classList.toggle('hidden',count>0);}
+ if(el.dataset.short){state.shortDraft[el.dataset.short]=el.value;persist();}
+ if(el.dataset.mockShort){state.mock.text[el.dataset.mockShort]=el.value;persist();}
+ if(el.id.startsWith('mock-calc-')){state.mock.calcs[Number(el.id.slice(10))]=el.value;persist();}
+});
+document.addEventListener('change',async event=>{const el=event.target;
+ if(el.id==='chapter'){chapter=el.value;render();}if(el.id==='quiz-chapter')quizChapter=el.value;if(el.id==='short-chapter'){shortChapter=el.value;render();}
+ if(el.id==='lab-algo'){lab={...lab,algo:el.value};labResult=null;render();}
+ if(el.dataset.task!==undefined){const n=Number(el.dataset.task);state.tasks=el.checked?[...new Set([...state.tasks,n])]:state.tasks.filter(x=>x!==n);persist();render();}
+ if(el.dataset.rubric){const id=el.dataset.rubric,i=Number(el.dataset.index),list=state.shortChecks[id]||[];state.shortChecks[id]=el.checked?[...new Set([...list,i])]:list.filter(x=>x!==i);persist();}
+ if(el.dataset.mockQ){state.mock.mc[el.dataset.mockQ]=Number(el.value);persist();}
+ if(el.dataset.self){if(el.value==='')delete state.mock.self[el.dataset.self];else state.mock.self[el.dataset.self]=Number(el.value);persist();const y=window.scrollY;render();window.scrollTo(0,y);}
+ if(el.id.startsWith('mock-calc-')){state.mock.calcs[Number(el.id.slice(10))]=el.value;persist();}
+ if(el.id==='import-file'&&el.files[0]){try{if(el.files[0].size>5000000)throw Error('size');const imported=validateImport(JSON.parse(await el.files[0].text()));if(confirm('导入会覆盖此浏览器的当前进度。确认导入？')){state=imported;persist();go('home');toast('进度已恢复');}}catch{toast('导入失败：请使用此页面导出的有效JSON备份');}}
+});
+document.addEventListener('keydown',event=>{if(['INPUT','SELECT','TEXTAREA'].includes(event.target.tagName)||event.ctrlKey||event.altKey||event.metaKey)return;if(!['quiz','wrong'].includes(route)||!state.quiz||state.quiz.done)return;const k=event.key.toLowerCase(),index='abcd'.includes(k)&&k.length===1?'abcd'.indexOf(k):'1234'.includes(k)&&k.length===1?Number(k)-1:-1;if(index>=0){event.preventDefault();document.querySelector(`[data-action="answer"][data-value="${index}"]`)?.click();}if(event.key==='Enter'&&event.target.tagName!=='BUTTON'){event.preventDefault();$('[data-action="next-question"]')?.click();}});
+const HTML_SOURCE='<!DOCTYPE html>\n'+document.documentElement.outerHTML;
+window.OS13180={get state(){return state;},get route(){return route;},go,makeLab,solveLab,labCorrect,validateImport};
+render();setInterval(updateClocks,1000);
+</script></body></html>
