@@ -1,0 +1,606 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-page-node-id="gGxeCDmGxsuSPnuTeKEE4X">
+<head data-page-node-id="xjXt7H1qIMk7KRpogGlo2R">
+<meta charset="UTF-8" data-page-node-id="FYGhitNdCXPHLk9eggL4kl">
+<meta name="viewport" content="width=device-width, initial-scale=1.0" data-page-node-id="7GqsUeGBDLCNn2Cir4B5tL">
+<title>操作系统(13180) 两天速成突击</title>
+<style>
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { font-family:"Microsoft YaHei","PingFang SC",sans-serif; background:#f5f6fa; color:#2c3e50; line-height:1.7; }
+  .container { max-width:960px; margin:0 auto; padding:16px; }
+  header { background:linear-gradient(135deg,#1a73e8,#6c5ce7); color:#fff; border-radius:12px; padding:28px 20px; text-align:center; margin-bottom:20px; }
+  header h1 { font-size:1.6em; margin-bottom:8px; }
+  header p { opacity:.92; font-size:.95em; }
+  .badge-row { display:flex; gap:10px; justify-content:center; margin-top:14px; flex-wrap:wrap; }
+  .badge { background:rgba(255,255,255,.2); padding:4px 14px; border-radius:999px; font-size:.85em; }
+  nav { display:flex; gap:8px; flex-wrap:wrap; justify-content:center; margin-bottom:20px; }
+  nav button { padding:8px 18px; border:none; border-radius:8px; background:#fff; color:#1a73e8; font-weight:bold; cursor:pointer; font-size:.95em; box-shadow:0 2px 6px rgba(0,0,0,.08); }
+  nav button.active { background:#1a73e8; color:#fff; }
+  section { display:none; animation:fadeIn .3s; }
+  section.active { display:block; }
+  @keyframes fadeIn { from{opacity:0} to{opacity:1} }
+  .card { background:#fff; border-radius:12px; padding:20px; margin-bottom:16px; box-shadow:0 2px 8px rgba(0,0,0,.06); }
+  .card h2 { color:#1a73e8; font-size:1.2em; margin-bottom:12px; border-left:4px solid #1a73e8; padding-left:10px; }
+  .card h3 { color:#6c5ce7; font-size:1.05em; margin:14px 0 6px; }
+  table { width:100%; border-collapse:collapse; margin:10px 0; font-size:.92em; }
+  th,td { border:1px solid #e0e0e0; padding:8px 10px; text-align:left; }
+  th { background:#eef3fd; color:#1a73e8; }
+  tr:nth-child(even) { background:#fafbfe; }
+  .formula { background:#fff8e1; border-left:4px solid #f5a623; padding:10px 14px; border-radius:6px; margin:10px 0; font-weight:bold; }
+  .tip { background:#e8f5e9; border-left:4px solid #2e9e5b; padding:10px 14px; border-radius:6px; margin:10px 0; font-size:.93em; }
+  .warn { background:#fdecea; border-left:4px solid #d93025; padding:10px 14px; border-radius:6px; margin:10px 0; font-size:.93em; }
+  ol,.card ul { padding-left:22px; margin:8px 0; }
+  li { margin-bottom:6px; }
+  /* 两天计划 */
+  .day-grid { display:grid; grid-template-columns:1fr 1fr; gap:14px; }
+  @media (max-width:700px){ .day-grid{grid-template-columns:1fr;} }
+  .day-card { background:#fff; border-radius:12px; padding:18px; box-shadow:0 2px 8px rgba(0,0,0,.06); border-top:4px solid #6c5ce7; }
+  .day-card.d1 { border-top-color:#1a73e8; }
+  .day-card h3 { color:#2c3e50; margin-bottom:10px; font-size:1.1em; }
+  .slot { margin-bottom:12px; }
+  .slot b { color:#e67e22; font-size:.9em; }
+  .slot ul { font-size:.9em; margin:4px 0 4px 18px; }
+  /* 背诵清单 */
+  .recite-item { background:#fff; border-radius:10px; padding:14px 16px; margin-bottom:10px; box-shadow:0 2px 6px rgba(0,0,0,.05); }
+  .recite-item b { color:#d93025; }
+  .recite-item .en { color:#888; font-size:.85em; }
+  /* 练习题 */
+  .q { background:#fff; border-radius:12px; padding:18px; margin-bottom:14px; box-shadow:0 2px 8px rgba(0,0,0,.06); }
+  .q .tag { display:inline-block; font-size:.78em; padding:2px 10px; border-radius:999px; margin-bottom:8px; }
+  .tag.choice { background:#e3f0ff; color:#1660c9; }
+  .tag.fill { background:#f3e8ff; color:#8244c4; }
+  .tag.judge { background:#e6f4ea; color:#1e7d3c; }
+  .q p { font-weight:bold; margin-bottom:10px; }
+  .opts label { display:block; padding:8px 12px; border:2px solid #eef0f4; border-radius:8px; margin-bottom:6px; cursor:pointer; transition:all .15s; }
+  .opts label:hover { border-color:#b6c9e8; }
+  .opts input { margin-right:8px; }
+  .btn { display:inline-block; background:#1a73e8; color:#fff; border:none; padding:9px 22px; border-radius:8px; cursor:pointer; font-size:.95em; font-weight:bold; margin-right:8px; }
+  .btn.reveal { background:#6c5ce7; }
+  .btn:hover { opacity:.9; }
+  .ans { display:none; margin-top:10px; padding:10px 14px; border-radius:8px; font-size:.93em; }
+  .ans.right { background:#e6f4ea; border-left:4px solid #1e7d3c; }
+  .ans.wrong { background:#fdecea; border-left:4px solid #d93025; }
+  .fill-input { width:100%; padding:8px 12px; border:2px solid #e0e4ea; border-radius:8px; font-size:.95em; margin:6px 0; }
+  .fill-input:focus { outline:none; border-color:#1a73e8; }
+  .score-bar { background:#fff; border-radius:12px; padding:16px 20px; margin-top:20px; text-align:center; box-shadow:0 2px 8px rgba(0,0,0,.06); position:sticky; bottom:12px; }
+  .score-bar b { color:#d93025; font-size:1.2em; }
+  code { background:#eef0f4; padding:2px 6px; border-radius:4px; font-size:.9em; }
+  .kmap { display:grid; grid-template-columns:repeat(auto-fit,minmax(210px,1fr)); gap:12px; }
+  .kbox { background:#fff; border-radius:10px; padding:14px; box-shadow:0 2px 6px rgba(0,0,0,.05); border-top:3px solid #6c5ce7; font-size:.9em; }
+  .kbox b { display:block; color:#1a73e8; margin-bottom:6px; }
+  details { margin:8px 0; }
+  summary { cursor:pointer; color:#1a73e8; font-weight:bold; padding:6px 0; }
+  footer { text-align:center; color:#999; font-size:.85em; padding:20px 0; }
+</style>
+</head>
+<body data-page-node-id="eT6EfAfoAXwctVLtwjjDFu">
+<div class="container" data-page-node-id="BU04rbnVAJVqL5KXCYDf1C">
+
+<header data-page-node-id="HKZb8GQCggXedQLLoQXxfC">
+  <h1 data-page-node-id="bYhWdciiLKT49P33tQZruz">操作系统（13180）· 两天速成突击</h1>
+  <p data-page-node-id="w0FkbzeNkj2juh2Gg9xXF0">湖北自考本科 · 考前 48 小时应急方案 · 直接照做版</p>
+  <div class="badge-row" data-page-node-id="BwLBTORXMP4S526HpGHbpI">
+    <span class="badge" data-page-node-id="lLOFXc75ACr7FSqqRKKcS2">📖 先背清单</span>
+    <span class="badge" data-page-node-id="JB76fWzjauj7Sbhdm3tjHQ">✍️ 再刷题</span>
+    <span class="badge" data-page-node-id="O0ngCtMIGiWQ9Q0iwmfBB3">🌙 睡前总复盘</span>
+  </div>
+</header>
+
+<nav data-page-node-id="IDrZFgoa5GFvVVPKdh7oNm">
+  <button class="active" onclick="go(0,this)" data-page-node-id="KDrhGYvrPEfODCzCLrQYWB">📅 两天作战计划</button>
+  <button onclick="go(1,this)" data-page-node-id="KnoL3evZdOim899lHMmB9H">🧠 考点速览</button>
+  <button onclick="go(2,this)" data-page-node-id="S4KXSCRSSTUBrfyRqPV7pG">🔥 必背清单</button>
+  <button onclick="go(3,this)" data-page-node-id="G12P3fXPsJu9x2XVa1vFGr">✍️ 练习题</button>
+  <button onclick="go(4,this)" data-page-node-id="pNr7gpHemy5zMMOWZDJi9c">🚨 考场策略</button>
+</nav>
+
+<!-- ==================== 两天计划 ==================== -->
+<section class="active" data-page-node-id="5AAwGtrrWp2B07bzOZWwNd">
+  <div class="day-grid" data-page-node-id="L2rQTLZLaTXPKeXmxRuzD9">
+    <div class="day-card d1" data-page-node-id="CRJuwPEgpDPLLf1a4Glt5Y">
+      <h3 data-page-node-id="VguvxkUwyf43f5FwqvqI5b">📅 Day 1（考前第二天）</h3>
+      <div class="slot" data-page-node-id="FMQR9p95Yj2qMzvsQ9LjxT"><b data-page-node-id="G56tSAzB4ukjdXq74LKMUC">上午 09:00–11:30（2.5h）</b>
+        <ul data-page-node-id="vI6M89S7QOqJaac7iGywxO">
+          <li data-page-node-id="rKZwKwKbpgDBGMv0FNRj0s">用本页「考点速览」过一遍<b data-page-node-id="zgmENYJDREAUF7THJfZcu6">第1章 操作系统概述 + 第2章 进程管理</b></li>
+          <li data-page-node-id="PJiszDjCBBf00HlMeF2oP3">重点：进程三态、PV 操作、死锁四条件（抄一遍）</li>
+        </ul>
+      </div>
+      <div class="slot" data-page-node-id="8jvIbfIRHLxUGB9lD4OrdP"><b data-page-node-id="jdbkFFHufrHhpeVOcH26oT">下午 14:00–16:30（2.5h）</b>
+        <ul data-page-node-id="7OW7KB07MykKQypAxdy0E6">
+          <li data-page-node-id="FPuGZpAIT655P51r8P51Bm">过「<b data-page-node-id="7cXBcqF4AhrjbeBrFtx053">第3章 内存管理 + 第4章 文件管理</b>」速览</li>
+          <li data-page-node-id="U4Vbr1Joqz8LBW9t9vGRjg">动手算 2 道页式地址变换题（本页练习区有）</li>
+        </ul>
+      </div>
+      <div class="slot" data-page-node-id="3FV4FTKNlhoBbKC8JMOWY2"><b data-page-node-id="shJ2IYUkwwgLxSCuR0TxfY">晚上 19:30–22:00（2.5h）</b>
+        <ul data-page-node-id="TfazHI6S8SaGEBdPZDvCOw">
+          <li data-page-node-id="y4PwJtISW8E0YQYjoudvF6">过「<b data-page-node-id="R6egcwYlbE0itdlW1KZUbL">第5章 设备管理</b>」+ 磁盘调度算法</li>
+          <li data-page-node-id="qvPiq0X4SLzrwRStCEvGMP">把「必背清单」全部背第一遍（合上页面能复述）</li>
+        </ul>
+      </div>
+    </div>
+    <div class="day-card" data-page-node-id="JmQS2y7Q79cohwFKWWZG4K">
+      <h3 data-page-node-id="sDVqZXJDh4WutYRA2mmiIm">📅 Day 2（考前一天）</h3>
+      <div class="slot" data-page-node-id="tmL6U9KFWvmRaK4Rw52Q7G"><b data-page-node-id="25zJ6nxGIx6PatGBCpDMS3">上午 09:00–11:30（2.5h）</b>
+        <ul data-page-node-id="tVo4ba44ihtWJGRbYFwSQi">
+          <li data-page-node-id="ypOsApgSx21rnth4r3uVAE">刷本页<b data-page-node-id="Ds8J1jAX1duvo1baw9YNgv">全部练习题</b>，错题当场弄懂并标记</li>
+        </ul>
+      </div>
+      <div class="slot" data-page-node-id="VEfU7UFDUo61SK0sePjqjR"><b data-page-node-id="TBeMRScjh2xzvTIN9DF3VV">下午 14:00–16:30（2.5h）</b>
+        <ul data-page-node-id="2tHz7IFPWoG710fyGNOhPj">
+          <li data-page-node-id="2QSaKUchPDDlBDrr1gPnQy">只看<b data-page-node-id="hgFjbLQZ2IxVkMj23MtNZb">昨天做错的题</b> + 必背清单第二遍</li>
+          <li data-page-node-id="VaQ9M22pHhndM1t811yC5O">PV 操作、银行家算法再各做 1 道新的</li>
+        </ul>
+      </div>
+      <div class="slot" data-page-node-id="xNedUSCQ2obKTBtbEpCHWa"><b data-page-node-id="9UOkNrt2JOrnuBZjExaGak">晚上 19:30–21:00（1.5h）</b>
+        <ul data-page-node-id="O7l4Nzye8c14Q6etjJi4JF">
+          <li data-page-node-id="ENTwuzx94dd2tboHseN9WR">必背清单<b data-page-node-id="XwOUzYZELBhLElU7WjrxSf">最后一遍</b> + 考场策略读一遍</li>
+          <li data-page-node-id="y8ONDqRTDeWHAToCiX1kUc">21:00 后<b data-page-node-id="3ww7hbjTXy1i7lx2FZ8SvB">不学新东西</b>，早睡，准备好证件</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  <div class="warn" style="margin-top:16px" data-page-node-id="J13VHK6ml3ivvaB4JOfIJQ"><b data-page-node-id="XmFwuC15dciTXVFfF6EtLo">两天速成的核心原则：</b>不求全懂，只求"看到题能写、背过的不丢分"。每年真题里纯记忆性题目（选择/填空/判断）占比过半，把必背清单拿下就保住了底盘。</div>
+</section>
+
+<!-- ==================== 考点速览 ==================== -->
+<section data-page-node-id="1dtJIzpBmWN8LtacO7nQS0">
+  <div class="card" data-page-node-id="R08RvW80pXoiGUBiQhGbCp">
+    <h2 data-page-node-id="tjALSeaam9N5yGOg3bVP5c">第1章 操作系统概述</h2>
+    <ul data-page-node-id="mUzH14LcXisSHnjAIz6KUF">
+      <li data-page-node-id="SRLHYVbp75DnfhMFnrILqs"><b data-page-node-id="PIp7n43RfsftwVG6KrWhhE">操作系统定义</b>：管理计算机软硬件资源、控制程序执行、方便用户使用的系统软件。</li>
+      <li data-page-node-id="hX8YIscFA1NXhDw4AqpIMK"><b data-page-node-id="hN81oJCHNnEDyvHGrKG7G9">四大功能</b>：处理机管理、存储管理、设备管理、文件管理。</li>
+      <li data-page-node-id="fxhCylXHN6KypOhC5oUVHW"><b data-page-node-id="NH7Ftxrnhtp2BCj6kLneaX">四大特征</b>：并发、共享、虚拟、异步。⚠️ 最常考：<b data-page-node-id="XkOd9owFIx08VVYCwCTvPl">并发与共享是最基本的两个特征，互为存在条件</b>。</li>
+      <li data-page-node-id="AMTMUwLcewOUiumo0sVool"><b data-page-node-id="jinBCNiydYgeb7IZfmuJBF">发展历程</b>：手工 → 批处理（单道/多道）→ 分时 → 实时。<b data-page-node-id="1YsHBDcNqQQ4OdUkIp5sAf">多道程序设计</b>：内存中同时存放多道程序，宏观并行、微观串行。</li>
+      <li data-page-node-id="zr9BK5DlcWXEF7nJRfxk1i"><b data-page-node-id="3fH2crrPjMzHpORAndgWdj">分时系统</b>特点：多路性、独立性、及时性、交互性；<b data-page-node-id="ADcDtLPZKKW66uFR0Ci9cg">实时系统</b>：可靠性优先。</li>
+      <li data-page-node-id="9TiiDDMh5eAcCjYSgUD2M0">常见题型：选择题判断"哪个不是 OS 特征/功能"；分时 vs 实时辨析。</li>
+    </ul>
+  </div>
+  <div class="card" data-page-node-id="leDgr2rkwEa3wjyM8pYZtf">
+    <h2 data-page-node-id="f6cgDIkBekWgGmUC82qRYI">第2章 进程管理（分值大户 ⭐⭐⭐）</h2>
+    <h3 data-page-node-id="nhQsBDHMzkc2zYZqdH8qsJ">进程与线程</h3>
+    <ul data-page-node-id="zkP9Ye5eXxmaRyErCVDVgB">
+      <li data-page-node-id="d2PmJznxBbAZC15iqp5poT"><b data-page-node-id="xb3QmZImD67aP0Lqy2qfsn">进程</b>：程序的一次执行过程，是资源分配的基本单位；<b data-page-node-id="qhvJ3ToCcC5DbIt4axjQm8">线程</b>：CPU 调度的基本单位。</li>
+      <li data-page-node-id="PO8M7uWYG1wgCCsf6UXcLj">进程组成：<b data-page-node-id="IWWLWJuX9KZEAZDWG1HqIV">PCB（进程控制块）</b>+ 程序段 + 数据段。PCB 是进程存在的<b data-page-node-id="dRig7DzH5OmIsk2upjYgSW">唯一标志</b>。</li>
+      <li data-page-node-id="Pk3GwWqUHxgxvM8MrV52EG">三种基本状态：<b data-page-node-id="qABViYrIc2kRgBEBwRxpxf">就绪、运行、阻塞（等待）</b>。运行→阻塞是"主动"（等I/O等事件）；阻塞→就绪是"被动"（事件发生被唤醒）。⚠️ 阻塞不能直接变运行。</li>
+    </ul>
+    <h3 data-page-node-id="Y4iA1cqyiF80F2E6i5Lh9N">PV 操作（信号量机制）——必考</h3>
+    <div class="formula" data-page-node-id="EfBd8hgh8jaNIAQlotj8IC">P 操作（wait）：S = S − 1；若 S &lt; 0，进程阻塞入等待队列<br data-page-node-id="xSrZzMqDkXQma8xAxoGn1r">V 操作（signal）：S = S + 1；若 S ≤ 0，唤醒一个等待进程</div>
+    <ul data-page-node-id="gvtpVerDSZWBD5gWw9BPFt">
+      <li data-page-node-id="8nyJlEkFEKTcFrpPjq0CTa"><b data-page-node-id="2YCI9cdpMQKihWrHKHT81I">互斥</b>：信号量初值 = 1（互斥信号量 mutex）；<b data-page-node-id="6ZMaBScs642CLHVGkPmKOD">同步</b>：初值 = 资源数量。</li>
+      <li data-page-node-id="CCg48denPhPcNrgHAv9VHH">PV 必须<b data-page-node-id="N5uAA0DGU5DGCsXriLED0a">成对出现</b>；判断题常考"P 在前 V 在后顺序可随意"——错，顺序错误可能死锁。</li>
+    </ul>
+    <h3 data-page-node-id="GjBv0eW5xImAKndICrkWmG">死锁</h3>
+    <ul data-page-node-id="kCXpNYGeOXInIBB8e15UWx">
+      <li data-page-node-id="5zshuTHtO1Ij7bEWyUpEPI"><b data-page-node-id="sBpfW1kLO364HD2oBfEKWO">四个必要条件</b>（缺一不可，必背）：互斥、占有且等待（请求和保持）、不可剥夺（不可抢占）、循环等待。</li>
+      <li data-page-node-id="0mrbr2Gy2cjQGmjuSbMS1g"><b data-page-node-id="0dUDE6BjOjEoaM6aUAjDCV">处理策略</b>：预防（破坏四条件之一）、避免（<b data-page-node-id="angVPlagK2Th5k3T0u9AD1">银行家算法</b>）、检测与解除。</li>
+      <li data-page-node-id="lQFzQOijq0koWFKzlUGYOs">银行家算法思路：找到"安全序列"则安全；找不到安全序列则拒绝分配（可能死锁）。考计算题：给分配表，判断状态是否安全。</li>
+    </ul>
+    <h3 data-page-node-id="LBlc4RMZR9ER3MyAnOl3dF">调度算法</h3>
+    <table data-page-node-id="DhxSvGi9gYUhhHH0hc2sAD">
+      <tr data-page-node-id="7fTFjrNi8GH77bwpqCELxn"><th data-page-node-id="LAHJPBRHxhJQLFPUFuszOi">算法</th><th data-page-node-id="bTlwJBgyneVGULAAzrRJkI">规则</th><th data-page-node-id="6vt93IrDfmX9SIsPo42khY">特点/考点</th></tr>
+      <tr data-page-node-id="HAKaH9uy0fz2pI6izrr9r7"><td data-page-node-id="4aK5nVUIghdB5a0WvpiWBI">FCFS 先来先服务</td><td data-page-node-id="HjslGxLxmkSn2BAITGnLn5">按到达顺序</td><td data-page-node-id="fn4FySBt9RjYrEWnALSEqu">公平，但对短作业不利</td></tr>
+      <tr data-page-node-id="tDwXqdKZ5GpGcCgBFGcPrt"><td data-page-node-id="QODaPxqtk0poQIUVFGSBLE">SJF 短作业优先</td><td data-page-node-id="ENettf1SWlH3cp05kjJUXd">最短的先</td><td data-page-node-id="KhnkWT5NeFCfB4jhnRmDDH">平均等待时间最短；可能饿死长作业</td></tr>
+      <tr data-page-node-id="zwce1506gu374GdYGzbrYT"><td data-page-node-id="IglcrSixmJibhmBEIhwIGu">RR 时间片轮转</td><td data-page-node-id="0KbWgMB0boGqyxRpka8DLZ">按时间片轮流</td><td data-page-node-id="CWjQyWn15junwFOgdg1m0X">分时系统常用；时间片太大→退化为FCFS，太小→切换开销大</td></tr>
+      <tr data-page-node-id="LWu2ogXxYDFNlfW4v2ESWd"><td data-page-node-id="FmYAbIonVcQXWxTS2ocSP1">优先级调度</td><td data-page-node-id="eefoBHUgnKg6qZkQB6eYky">优先级高的先</td><td data-page-node-id="ItKUhIDwv0c7rbSzNarlD5">静态/动态；可能饿死低优先级</td></tr>
+      <tr data-page-node-id="ShRQS7sq77wP1tCJcKSHhu"><td data-page-node-id="nj4eIX9ESXsWeNE4eJO441">多级反馈队列</td><td data-page-node-id="JSggBniN8IH17vso7NeH1g">多个队列时间片递增</td><td data-page-node-id="K8yTziBjOsy9oLgZQ0FIgb">兼顾各方面，最灵活</td></tr>
+    </table>
+  </div>
+  <div class="card" data-page-node-id="IDn0eSlpMoAcLKWXLqTYTg">
+    <h2 data-page-node-id="S367LNAtjlHdoCdACotKF0">第3章 内存管理（计算题重灾区 ⭐⭐⭐）</h2>
+    <h3 data-page-node-id="5hDs4936bRYbcQvfcd7F1x">基本概念</h3>
+    <ul data-page-node-id="5zLSA65sBqolWqqyOl51eh">
+      <li data-page-node-id="HozIj99AP3IUCLwhvbgJxe">逻辑地址（虚拟）vs 物理地址；地址重定位：静态（装入时）/ 动态（运行时）。</li>
+      <li data-page-node-id="jAzEHJaZptdga4rHMXHS0g">交换与覆盖：扩充内存的早期手段。</li>
+    </ul>
+    <h3 data-page-node-id="ZSLjeAMFYZZZVgV1IVX0zi">连续分配</h3>
+    <ul data-page-node-id="fH0qwC641JQMWqDxnLXaVm">
+      <li data-page-node-id="VWpkxEe11oiOM2tqjv9sQD">分区：首次适应、最佳适应（产生大量小碎片）、最坏适应。</li>
+      <li data-page-node-id="REirEvqgyIcE3serqtGg23">碎片：内部碎片（分区内浪费）vs 外部碎片（分区之间小空间）。</li>
+    </ul>
+    <h3 data-page-node-id="22Qa2HNqYSLDxUMjgXkgby">分页（重点计算！）</h3>
+    <div class="formula" data-page-node-id="aos63j0pDDqr8vKVaD9ReT">物理地址 = 块号（页框号）× 页大小 + 页内偏移<br data-page-node-id="Vb05gXREGJtfbHLKhIiE1b">页号 = 逻辑地址 ÷ 页大小（取整）　偏移 = 逻辑地址 mod 页大小</div>
+    <ul data-page-node-id="1f1L9K5BpXyZGU1lC16cY1">
+      <li data-page-node-id="B3mQ4zq8zGHZ8ZkG0F3x5e">页表：页号→块号的映射。每进程一张。</li>
+      <li data-page-node-id="u6gg0xUktAw5E6LugiTC2r">页面大小通常 4KB；逻辑地址 32 位可分<b data-page-node-id="UiNBIHQiF8VrY9nsInL03L">页号位数 + 偏移位数</b>。</li>
+    </ul>
+    <h3 data-page-node-id="Zenn72DmWsAeUaE5NCzDjz">虚拟存储与页面置换算法（必考计算）</h3>
+    <table data-page-node-id="bBlWLvxLFcGKycuCks1JWs">
+      <tr data-page-node-id="xlgk3RmmuJ5zFqwXnnCFDf"><th data-page-node-id="Gz01RFfAt9yFLpwHtQbGZU">算法</th><th data-page-node-id="wByZAKvIXRk8g55Dcxgi8r">规则</th><th data-page-node-id="bK7RcT9lKr8ZWEO0KVB8kU">考点</th></tr>
+      <tr data-page-node-id="ggKfr4SZfpPdB8QDYXfSSs"><td data-page-node-id="yXbQwW8OwWFm0JUDOWhlnq">OPT 最佳置换</td><td data-page-node-id="wNFBNvbXzAb6rE7lnf7bEH">淘汰以后最久不用的页</td><td data-page-node-id="0nQPqSNu87OmthEqX7uCZQ">理论最优，无法实现（需未来信息），做题基准</td></tr>
+      <tr data-page-node-id="tJghTYsE1UjaS24fFMB4Tv"><td data-page-node-id="i0z0tpcFZGEFxz0kEIvFWu">FIFO 先进先出</td><td data-page-node-id="DzTpW72tlAAsVaWJgT27qe">淘汰最先进入内存的页</td><td data-page-node-id="ZfSz0J7chUSDyjfL3K32Ko">可能出现<b data-page-node-id="jxhztVz3GgqYTODx2y5ScN">Belady 异常</b>（页框增多缺页反而增多）</td></tr>
+      <tr data-page-node-id="CnNz7zgGd74BZV5fhHmOwE"><td data-page-node-id="JoHVKDXhUaBJJpm9v0m2FL">LRU 最近最久未使用</td><td data-page-node-id="DPGj3kmhF16bv4i8e1mFqc">淘汰最长时间没被访问的页</td><td data-page-node-id="50rwpCFBpsmOgsUinh5T8J">性能接近 OPT，最常考</td></tr>
+      <tr data-page-node-id="Tj2HaTrnbe6G5jtzLkU5GG"><td data-page-node-id="MmUo0Czp5GWEZTSWfuFxbc">Clock 简单时钟</td><td data-page-node-id="RQtQv3XDQDxTUfVeS3S8S8">循环扫描访问位</td><td data-page-node-id="QVSCzYC3xic6IhvHrfm8cR">LRU 的近似实现</td></tr>
+    </table>
+    <div class="tip" data-page-node-id="PcZRaWxICilSmAMQBpAHWl">缺页率计算：缺页次数/总访问次数。注意：发生<b data-page-node-id="mXkjD2iV15dguDQd9Yc8yW">缺页不一定淘汰</b>（内存有空位时直接调入）；<b data-page-node-id="W8GC0HfM1g72Y4SQfUmqYG">抖动（颠簸）</b>= 缺页率过高，CPU 大部分时间在换页。</div>
+    <h3 data-page-node-id="PPQ5HLOEis0C7MaQ8JPO02">分段 vs 分页</h3>
+    <ul data-page-node-id="ERQo9suHDKkL9Mw425ZJCy">
+      <li data-page-node-id="8uxj9lQ5ceijxrwETqJvhC">分页：物理划分、固定大小、<b data-page-node-id="hxCNavhLuGzwJ0k3Q0kBsW">有内部碎片</b>；分段：逻辑划分、不定长、<b data-page-node-id="dTIqzHCg454Gtf5tU2XEer">有外部碎片</b>。便于共享保护的是<b data-page-node-id="UX9YhWgknKN751AEEi3iNq">分段</b>。</li>
+    </ul>
+  </div>
+  <div class="card" data-page-node-id="CpbQXQpylNB3676nPKTe8H">
+    <h2 data-page-node-id="25NvTuoWIOb9Nvy0RHrs1S">第4章 文件管理</h2>
+    <ul data-page-node-id="CZFPb9MEc8GgH57a0ktP2P">
+      <li data-page-node-id="UmrE5nzDr1YlPy5vFAhiaC">文件逻辑结构：顺序文件、索引文件、索引顺序文件。</li>
+      <li data-page-node-id="psq9QPwnYqvOAH1N8VtHeJ"><b data-page-node-id="Ep3wABmsBuzF6IChsEaKJi">FAT / 索引节点（inode）</b>：显式链接表，常考概念辨析。</li>
+      <li data-page-node-id="4nccGQpRxrX5zi0GXCtBGZ">物理结构：<b data-page-node-id="f2cu21cLyy4UglVW7aE68m">连续分配</b>（随机访问快、有外部碎片）、<b data-page-node-id="CXxWUl89H30LRwu5K9AcVo">链接分配</b>（隐式链接/显式FAT）、<b data-page-node-id="ofujZZTrtrDt9xBX2o2Ujd">索引分配</b>（一个文件一个索引块）。</li>
+      <li data-page-node-id="pMrpgooenccMFeE9Sv7dL6">目录：单级/两级/树形（多级）。<b data-page-node-id="ejgk8vEWiYBvRowRttPd3P">路径名</b>、当前目录、工作目录。</li>
+      <li data-page-node-id="sl50htU7vr4ke1VDrYkxZE">文件共享：硬链接（同一 inode）、软链接（符号链接，快捷方式）。</li>
+      <li data-page-node-id="ckf4ZbfDyY3B2VM9BYRPME">空闲空间管理：空闲表、空闲链、位示图（常考：位示图用二进制位表示磁盘块是否空闲）。</li>
+    </ul>
+  </div>
+  <div class="card" data-page-node-id="iEXhedZqn3AwK1ahNcZAUy">
+    <h2 data-page-node-id="mlpBx9HNGRfOxVJDsR9VTq">第5章 设备管理</h2>
+    <ul data-page-node-id="90P5Kns4RjRhlifgwJ9x35">
+      <li data-page-node-id="CAnY04H6ucu2tMbBGhKbm1">I/O 控制方式：<b data-page-node-id="KFx6o1HaHHpVHgxJ5qtvsp">程序直接控制（轮询）→ 中断驱动 → DMA → 通道</b>。CPU 干预越来越少（选择题必考排序/辨析）。</li>
+      <li data-page-node-id="RKQtE6o8rHWUR0JUwtShB1">缓冲：单缓冲、双缓冲、循环缓冲、缓冲池。缓冲目的：缓和 CPU 与 I/O 速度不匹配、减少中断次数。</li>
+      <li data-page-node-id="YCHQ82BXeEtJij4cGSVgQt">SPOOLing（假脱机）：用磁盘模拟脱机 I/O，实现<b data-page-node-id="sQmx1lMoOdLoQ0tfECCo0l">虚拟设备</b>（如共享打印机），常考概念题。</li>
+      <li data-page-node-id="LaJsbcZzy3ja3MkLUJEPUq">设备分配：独占/共享/虚拟设备；逻辑设备表 LUT。</li>
+      <li data-page-node-id="SdRy3EDkmRfQhRPShkt0GR">磁盘访问时间 = <b data-page-node-id="cYeV0m5eZoDIjGze5zzcLf">寻道时间 + 旋转延迟 + 传输时间</b>。寻道时间通常是大头。</li>
+    </ul>
+    <h3 data-page-node-id="4qoWmPTs4FydxJILAL27S8">磁盘调度算法（计算必考）</h3>
+    <table data-page-node-id="uHUfrRsYPvLfi4L06Qcndz">
+      <tr data-page-node-id="TttG8CJOrksVPbLsrfK5fa"><th data-page-node-id="vOPye4miPrGEa2jKtnt8wo">算法</th><th data-page-node-id="a5teHWD0JIDO781qe98fLx">规则</th></tr>
+      <tr data-page-node-id="Vssg0mWyi3xrLLAqEKvMfA"><td data-page-node-id="mhZfTNi53erxJWWGRXcOrE">FCFS</td><td data-page-node-id="7zEEvx88H6TxqKpNA88BST">按请求顺序（磁头来回跑）</td></tr>
+      <tr data-page-node-id="GJiLglIGGgbJKN0gb8P5lh"><td data-page-node-id="g5HE6qs7mA0npLwJM0N0AS">SSTF 最短寻道</td><td data-page-node-id="5XK3gx1AMNPPxBRlSQA3EX">每次找离当前最近的（可能饿死边缘请求）</td></tr>
+      <tr data-page-node-id="t7zSBDzx33nekzPBpiXece"><td data-page-node-id="RWGMAQlpz7b1KDHIxhEelc">SCAN 电梯调度</td><td data-page-node-id="eJpYkvrNfAKRDNCJ4kv0SX">沿一个方向扫到头再折返</td></tr>
+      <tr data-page-node-id="g6jkG0URs6v2FQ3SPDNC1w"><td data-page-node-id="nrpwDBJCXtSDmDunVEhF00">C-SCAN 循环扫描</td><td data-page-node-id="itCETlB6VBG0O95mOKB7IO">只在一个方向服务，到头直接跳回起点</td></tr>
+    </table>
+    <div class="tip" data-page-node-id="dkB0mQS6UOIT7cdeA4Q92Z">考试常给磁道序列，让你按 SSTF/SCAN 算总寻道距离。方法：画一条磁道数轴，逐个标记移动轨迹，最后求和。注意 SCAN 题目会给"当前移动方向"。</div>
+  </div>
+  <div class="card" data-page-node-id="fMCVAaTYxKOjhIevziQGNq">
+    <h2 data-page-node-id="zQH5JDOHiY2fUCHcsUqX0l">第6章 其他高频小考点</h2>
+    <div class="kmap" data-page-node-id="o9ot7OkAjhX3SRiwUtSNyi">
+      <div class="kbox" data-page-node-id="YBxNjtKWItYw6TRlloOhej"><b data-page-node-id="IJA22ojnZ213QMw46WqBgx">中断与异常</b>内中断（异常：除0、越界）vs 外中断（I/O完成、时钟）；系统调用是用户态→核心态的"特殊中断"。</div>
+      <div class="kbox" data-page-node-id="qwt7ZiPiB55q63IQvnaQcW"><b data-page-node-id="fuThtpigHuB8BF8L6jrYAy">用户态/核心态</b>特权指令只能在核心态执行；系统调用切换到核心态。</div>
+      <div class="kbox" data-page-node-id="Mhw1dENKf8pYZyeGJTknhp"><b data-page-node-id="iOKnlEmH9Lqotm8CTwrYAp">管程</b>高级同步机制，封装了共享数据和 PV 操作；同一时刻只有一个进程在管程内。海南自考13180 大纲为"经典内容"，管程可能只考名词解释。</div>
+      <div class="kbox" data-page-node-id="bdfbh9xGwLDev3oZnnMhHs"><b data-page-node-id="AgIvRRTa66lF15s7nSTDci">实时调度</b>EDF 最早截止期优先；RM 单调速率。</div>
+      <div class="kbox" data-page-node-id="63DZi2GLLlHFimklGH9mFo"><b data-page-node-id="MSyP28qec4B0wRFkvejaHs">常用缩写</b>OS/PCB/LRU/FIFO/DMA/SPOOLing/FCFS/SSTF</div>
+    </div>
+  </div>
+  <div class="warn" data-page-node-id="ych2mLuAGXR7H0FxAmCcqc"><b data-page-node-id="1uwnuNbFKXBNvvHtVsh6hQ">时效提示：</b>以上考点基于全国自考《操作系统》课程通用大纲整理，仅供急救参考。考纲细节以湖北省教育考试院及主考院校发布的最新考试大纲为准。</div>
+</section>
+
+<!-- ==================== 必背清单 ==================== -->
+<section data-page-node-id="33lRh3NDlN7zpj7G3dw3mc">
+  <div class="card" data-page-node-id="7rZBy0JHo1Byu71z9XXxi1">
+    <h2 data-page-node-id="5smkSn3nlZVk4M8IXW3yoB">🔥 睡前必背 20 条（合上页面要能复述）</h2>
+  </div>
+  <div class="recite-item" data-page-node-id="3hGZc3eDF0Nv1rXySwVFjp">1. <b data-page-node-id="CiHU1ZZ9VjorVt5WPnAP6z">OS 四大特征</b>：并发、共享、虚拟、异步。<span class="en" data-page-node-id="7FzOqJst2NFFSZtIWhRBH5">并发和共享是最基本特征，互为存在条件。</span></div>
+  <div class="recite-item" data-page-node-id="zFuQkYDx214XmYmVUEPAaC">2. <b data-page-node-id="sqEDCZy0FRiej7YKOPcRaY">OS 四大功能</b>：处理机管理、存储管理、设备管理、文件管理。</div>
+  <div class="recite-item" data-page-node-id="br6BuZhqAnETMrlXPLs3dd">3. <b data-page-node-id="7LlFi5wulUOQIFJLz5wi77">进程是资源分配的基本单位，线程是 CPU 调度的基本单位。</b></div>
+  <div class="recite-item" data-page-node-id="Cj2T8q1phR4lR9FnBOjvEy">4. <b data-page-node-id="9HmpO35oT68LiQfkZPp7kJ">PCB 是进程存在的唯一标志</b>；进程 = PCB + 程序段 + 数据段。</div>
+  <div class="recite-item" data-page-node-id="fsbT3gj7uvTXtnqj9gFfr3">5. 进程三态：<b data-page-node-id="MbK3G7Q9OnsNclMlt79Aua">就绪→运行（调度）、运行→阻塞（主动等事件）、阻塞→就绪（被动被唤醒）、运行→就绪（时间片到）</b>。阻塞不能直接运行。</div>
+  <div class="recite-item" data-page-node-id="lqY15viYCKUOQ28VembLli">6. <b data-page-node-id="M72Tqc99LO1o5RpUQIEXfx">P 操作减 1，S&lt;0 阻塞；V 操作加 1，S≤0 唤醒</b>。互斥信号量初值 1，同步信号量初值 = 资源数。</div>
+  <div class="recite-item" data-page-node-id="vGY3QDXKYLkbkSwyq3tgxv">7. <b data-page-node-id="DpbHUEIWeeaL1nNMq0aXxW">死锁四条件</b>：互斥、占有且等待、不可剥夺、循环等待（缺一不可，破坏一个即可预防）。</div>
+  <div class="recite-item" data-page-node-id="f614U7RAbyKTwl7DGVV8nw">8. 死锁处理四策略：<b data-page-node-id="ZNOCPOzHStS9xhpJC6CddE">预防、避免（银行家算法）、检测、解除</b>。</div>
+  <div class="recite-item" data-page-node-id="P9TZBdqXDZIjWa4B9bzCGn">9. SJF 平均等待时间<b data-page-node-id="oRC1KdGLKkeVzFdqHzEqdK">最短</b>；RR 是<b data-page-node-id="TIRrAJAMo8amuEjRDFEXSu">分时系统</b>的算法；时间片太大退化为 FCFS。</div>
+  <div class="recite-item" data-page-node-id="2N8zGLrGepOZEmiFWa8Nkg">10. 分页<b data-page-node-id="oOEPi0osQ7EQki3bhoilnY">有内部碎片</b>，分段<b data-page-node-id="X0tbtLsyVQ2gLAovt4FmR4">有外部碎片</b>；分段便于共享与保护（逻辑单位），分页是物理单位。</div>
+  <div class="recite-item" data-page-node-id="GTOXNEv8pvbGVdtMJXQBT8">11. 物理地址 = <b data-page-node-id="5x6PXcx6G6AjuLplpNKGqB">块号 × 页大小 + 页内偏移</b>；页号 = 逻辑地址 ÷ 页大小。</div>
+  <div class="recite-item" data-page-node-id="YUdsoijYTRirPIbdREIms3">12. 置换算法：<b data-page-node-id="WgPNNAtZXvLQyUJOak692t">OPT（最优不可实现）、FIFO（有 Belady 异常）、LRU（近似最优，考得最多）</b>。</div>
+  <div class="recite-item" data-page-node-id="5lG1t5p4RvnvREVmRZImVZ">13. <b data-page-node-id="NzLZ9bA31rO7hNfstnCzXs">抖动（颠簸）</b>：缺页率过高导致 CPU 忙于换页。</div>
+  <div class="recite-item" data-page-node-id="I1VgtAhyL2Pmh7bi18Q4Ln">14. 索引文件引入的目的是<b data-page-node-id="xGDAoh6VBVZzEUbnoNdCk4">加快文件查找速度</b>；inode（索引节点）把文件名与文件描述分开。</div>
+  <div class="recite-item" data-page-node-id="dR0lkNURalK7XEmnRgz2ak">15. 硬链接共享同一 inode；软链接（符号链接）是路径的快捷方式。</div>
+  <div class="recite-item" data-page-node-id="LhUT9grpR9jOJPQ5U4q2K6">16. 空闲块管理：<b data-page-node-id="ZzGpaDlkO8HahjLWMgN8eI">位示图</b>用每一位表示一个磁盘块的使用情况。</div>
+  <div class="recite-item" data-page-node-id="8orM4RRHH3EizVe6EKyDAd">17. I/O 控制方式演进：<b data-page-node-id="z7RFGVf0GG9bHFCW6Cj1UZ">轮询 → 中断 → DMA → 通道</b>，CPU 干预依次减少。</div>
+  <div class="recite-item" data-page-node-id="RDPqX2z5Sn41FnVnOTNcAA">18. <b data-page-node-id="H0FFDMDCcK84tqdOK6Egm7">SPOOLing（假脱机）</b>技术把独占设备改造成共享的<b data-page-node-id="amTSwSDSRubpeZ3kufUTBQ">虚拟设备</b>（典型：打印机）。</div>
+  <div class="recite-item" data-page-node-id="ShpPVq2dhVOSBftIPg2AyB">19. 磁盘访问时间 = <b data-page-node-id="VI7a4ijnx2mHcfmQQpitKY">寻道时间 + 旋转延迟 + 传输时间</b>。</div>
+  <div class="recite-item" data-page-node-id="m92s8Zf0c7tHIRzFVqeXl2">20. 磁盘调度：<b data-page-node-id="gT714dB8xGxePQAcQDi2wK">SSTF 最短寻道优先；SCAN 电梯算法</b>（沿方向扫到底再折返）。</div>
+  <div class="tip" data-page-node-id="B9kXBF0DgcyXlRlcNS5Wyz"><b data-page-node-id="lWyUsukR2G2PPjF72hxxEb">背法：</b>Day1 晚上背一遍（读出声）、Day2 下午背第二遍（合页复述卡壳的做标记）、Day2 晚上背第三遍（只背卡壳的）。三遍法则，不抄写、不默写，只复述。</div>
+</section>
+
+<!-- ==================== 练习题 ==================== -->
+<section data-page-node-id="jx0nEWJWQMAgCY1wOytFJP">
+  <div class="card" data-page-node-id="RVtKgzaKpk4fcHcYHcrRXy">
+    <h2 data-page-node-id="Dr6GHcbzFpzD6HHXzbmPLL">✍️ 速成练习 16 题（做完 → 错题标出来晚上再刷）</h2>
+    <p style="font-size:.9em;color:#888" data-page-node-id="gESqAuSbisyOrYD89EObQi">点选项即判分；填空题填完点"对答案"。错题会在底部汇总。</p>
+  </div>
+
+  <div class="q" data-ans="B" data-type="choice" data-page-node-id="aFLZ5t7BFM3A4WrYd8xTQ1">
+    <span class="tag choice" data-page-node-id="ANfehHEWNSC5SBtI2r4noU">选择 · 第1章</span>
+    <p data-page-node-id="IhxwhmUTBzprrkwqi9DCL7">1. 操作系统最基本的两个特征是（　）</p>
+    <div class="opts" data-page-node-id="qLWQW35DrMmDKAs0ZNIOGF">
+      <label data-page-node-id="nrdNQODGUpLcjNPmB6W8dR"><input type="radio" name="q1" value="A" data-page-node-id="qYqoB6CznvyYGg4FeDwoe9">A. 并发和虚拟</label>
+      <label data-page-node-id="aamECfwMnf3BX3kCRFXprR"><input type="radio" name="q1" value="B" data-page-node-id="MVHH9w3UMXvQm3zyjtGbNZ">B. 并发和共享</label>
+      <label data-page-node-id="joBDGKCM8p0lR22rbEXEAC"><input type="radio" name="q1" value="C" data-page-node-id="bLAOLTpZTYw93anz16T260">C. 共享和异步</label>
+      <label data-page-node-id="yww4Vpb83Q17LrmRKyekFL"><input type="radio" name="q1" value="D" data-page-node-id="ttsVmxfQQBH9keYmrsZOc2">D. 虚拟和异步</label>
+    </div>
+    <div class="ans" data-page-node-id="XlFaLKKzgDO9oRFWi7Skra"></div>
+  </div>
+
+  <div class="q" data-ans="A" data-type="choice" data-page-node-id="srjye8xHSd4KhJwYQtjmjL">
+    <span class="tag choice" data-page-node-id="YOMFpTuV7pUvqrBE4eIqqt">选择 · 第2章</span>
+    <p data-page-node-id="9pAfuEJEP0MSGeb13OdvFO">2. 下列进程状态转换中，不可能发生的是（　）</p>
+    <div class="opts" data-page-node-id="w7UnTfDToucaQVVPFR1HST">
+      <label data-page-node-id="UHjSALAokXx4yRp1GJc8jr"><input type="radio" name="q2" value="A" data-page-node-id="fTJPZIw5OgTaXhIoEdlUgC">A. 阻塞 → 运行</label>
+      <label data-page-node-id="wywctexfFmYJKO1MNpaGj8"><input type="radio" name="q2" value="B" data-page-node-id="BKgB69Rc9GSW8qWggGsoJR">B. 运行 → 阻塞</label>
+      <label data-page-node-id="EKPnSlwbw5Th0B3FLTQ6BD"><input type="radio" name="q2" value="C" data-page-node-id="FKHBMDBk8odM7mf7VXG7YC">C. 就绪 → 运行</label>
+      <label data-page-node-id="wJba4XHOWKApSjSGFLFw7D"><input type="radio" name="q2" value="D" data-page-node-id="bRLc8rQ0BTKGKDDI4F1F7A">D. 运行 → 就绪</label>
+    </div>
+    <div class="ans" data-page-node-id="WLm6x8GbuuGr8AK0bQyuSR"></div>
+  </div>
+
+  <div class="q" data-ans="C" data-type="choice" data-page-node-id="U5Ui6OE7tUAU0MHBTRC82A">
+    <span class="tag choice" data-page-node-id="eAflJ2XoBP7vO79PSKvJ34">选择 · 第2章</span>
+    <p data-page-node-id="SDMq3VMmKuGQRqxZXA7Rbh">3. 用 PV 操作实现进程互斥时，信号量的初值应为（　）</p>
+    <div class="opts" data-page-node-id="BP9OwhRulH2mBxWg3Lc8HF">
+      <label data-page-node-id="DCLgIBuN5TCA0MzwVsfr1m"><input type="radio" name="q3" value="A" data-page-node-id="ZHplrEq3R2YDPHl9ur2IML">A. 0</label>
+      <label data-page-node-id="qFOa6NSUGQWw9YGETvJPjD"><input type="radio" name="q3" value="B" data-page-node-id="0T4yMRFCVH21QZtGshCbsI">B. −1</label>
+      <label data-page-node-id="20Oej56yX67sgwwQH5lVnj"><input type="radio" name="q3" value="C" data-page-node-id="YuFTi1KCArSNERolj7aGVs">C. 1</label>
+      <label data-page-node-id="lgiWGa191nO8d1yEJ4TOCx"><input type="radio" name="q3" value="D" data-page-node-id="nTlNGNSgxwM1fNElpv4qcg">D. 资源总数</label>
+    </div>
+    <div class="ans" data-page-node-id="yp2bZooB1rACRrJFArUIhV"></div>
+  </div>
+
+  <div class="q" data-ans="D" data-type="choice" data-page-node-id="QLnnHci3kgTiWdibjfIDmY">
+    <span class="tag choice" data-page-node-id="IUZiBhJ33um8JvVEG3BUKk">选择 · 第2章</span>
+    <p data-page-node-id="8ojou9r2xmqqMb3BOqYuTI">4. 下列不属于死锁产生的必要条件的是（　）</p>
+    <div class="opts" data-page-node-id="HEnUUQCIZrPAB5Wl1m4Zs7">
+      <label data-page-node-id="f03SGTIX8iv91CLwu0IWYG"><input type="radio" name="q4" value="A" data-page-node-id="9pkrJMm42NVhI2Ny8rVnqf">A. 互斥</label>
+      <label data-page-node-id="IzPEI44DOkItA5O1yLodIC"><input type="radio" name="q4" value="B" data-page-node-id="AkA7ztckV9KGJ3DAyPgXCz">B. 占有且等待</label>
+      <label data-page-node-id="f177f6FAvIDTCH7R10qlE8"><input type="radio" name="q4" value="C" data-page-node-id="klWKqoh5YN5jDFzypE3iKf">C. 循环等待</label>
+      <label data-page-node-id="CelsnqcjhVbY9EovHwZ3Qn"><input type="radio" name="q4" value="D" data-page-node-id="ineAhiIZXCsb96BE14IbpE">D. 时间片轮转</label>
+    </div>
+    <div class="ans" data-page-node-id="EN2PIv1TOb0vXrlWzrrWUw"></div>
+  </div>
+
+  <div class="q" data-ans="B" data-type="choice" data-page-node-id="eUx4CKbz1fvnyLbyqusaOo">
+    <span class="tag choice" data-page-node-id="YCqx7EMqrViSfHbd1lVYqr">选择 · 第2章</span>
+    <p data-page-node-id="BaJurkEqFCW1wdhPUm6XeP">5. 平均等待时间最短的调度算法是（　）</p>
+    <div class="opts" data-page-node-id="uE7svBGKR5BkNHdZXBvI0P">
+      <label data-page-node-id="IBzA5z7fx9VJ3JQvqb9Men"><input type="radio" name="q5" value="A" data-page-node-id="4nWh7LeLxJ0SsGhYccP86i">A. FCFS</label>
+      <label data-page-node-id="fx8zejIj8AJEIEXiiD5QYh"><input type="radio" name="q5" value="B" data-page-node-id="lPnkYg5eE2F3R185Q9R9aY">B. 短作业优先（SJF）</label>
+      <label data-page-node-id="8rtU7KM6tIi8S0MIcwzsE3"><input type="radio" name="q5" value="C" data-page-node-id="58WNV3GAvX4rjuDT3ae5lQ">C. 时间片轮转（RR）</label>
+      <label data-page-node-id="1D8qxeSlCEuBtkqFu7Prwb"><input type="radio" name="q5" value="D" data-page-node-id="sKMy2mtY8lugIRfqAB7xSg">D. 优先级调度</label>
+    </div>
+    <div class="ans" data-page-node-id="ySyOu1MlWL6dFRi516xt6L"></div>
+  </div>
+
+  <div class="q" data-ans="A" data-type="choice" data-page-node-id="kvw60fSC2N6cvHjxparzSi">
+    <span class="tag choice" data-page-node-id="zoKSMdgy9NDHbtqh4RVOCX">选择 · 第3章</span>
+    <p data-page-node-id="iOn12CLcGvLdbybQH270bA">6. 分页存储管理中，会产生（　）；分段存储管理中，会产生（　）</p>
+    <div class="opts" data-page-node-id="y0TOcBwgpMbNCKv02Uwkep">
+      <label data-page-node-id="kRog27whYIjtGs6re19YPn"><input type="radio" name="q6" value="A" data-page-node-id="Vh6fEtvf6SWpq2UQSCsNZQ">A. 内部碎片；外部碎片</label>
+      <label data-page-node-id="CHo3retVYpE1N9KCqvj6iZ"><input type="radio" name="q6" value="B" data-page-node-id="aW8oxR7rS35UPX4566wuiE">B. 外部碎片；内部碎片</label>
+      <label data-page-node-id="y5osKdWPhNSKLYMEnPaDyZ"><input type="radio" name="q6" value="C" data-page-node-id="YBN7Yh8TBsHmfOLaJXIkcY">C. 都产生内部碎片</label>
+      <label data-page-node-id="GPWCETeFWt1o6eAxOrM0QS"><input type="radio" name="q6" value="D" data-page-node-id="3APXbc4EC11Ekh8BEVFCSE">D. 都产生外部碎片</label>
+    </div>
+    <div class="ans" data-page-node-id="vhFl5reKgDCODW75eXyo8T"></div>
+  </div>
+
+  <div class="q" data-ans="B" data-type="choice" data-page-node-id="pNqowyOySHHA4b3MGNkRd9">
+    <span class="tag choice" data-page-node-id="vTAgLqx1JZA5A4sCoiqWFK">选择 · 第3章</span>
+    <p data-page-node-id="rKPOmOpDHIl9ODiHLl0j53">7. 某系统页面大小为 4KB（4096B），逻辑地址 8448 的页号和偏移分别是（　）</p>
+    <div class="opts" data-page-node-id="ZwwUFqRVZRvBpBHS3qNdzf">
+      <label data-page-node-id="IZhKUyaNo2OJdesz8TtDcD"><input type="radio" name="q7" value="A" data-page-node-id="S8rFmP8WjHpE0sugn0smp8">A. 页号 1，偏移 4352</label>
+      <label data-page-node-id="zBooyP66A5xaAq7tFFMUNr"><input type="radio" name="q7" value="B" data-page-node-id="MdWPsEgQWAov2G0FkC6j79">B. 页号 2，偏移 256</label>
+      <label data-page-node-id="LsH9pAw2phoFXH8iq06NJQ"><input type="radio" name="q7" value="C" data-page-node-id="BHab2NydzVCAbm4ZPNKmJF">C. 页号 2，偏移 4352</label>
+      <label data-page-node-id="RL4qMwtzUzYzZUYUpBec25"><input type="radio" name="q7" value="D" data-page-node-id="qWRBRDESFexycPdi5Lqfy1">D. 页号 3，偏移 256</label>
+    </div>
+    <div class="ans" data-page-node-id="Xe5na9lVWXaEUCbyk4uI4g"></div>
+  </div>
+
+  <div class="q" data-ans="C" data-type="choice" data-page-node-id="ekenVBKPNaQkVNOsm2hCay">
+    <span class="tag choice" data-page-node-id="BDt8Oxbi4jaDxiyEzBDJSM">选择 · 第3章</span>
+    <p data-page-node-id="vQ1n7LMudtHQiI1LIxiJjn">8. 可能出现 Belady 异常（页框增多缺页反而增多）的置换算法是（　）</p>
+    <div class="opts" data-page-node-id="Pzf8ND6APnQE0pAndhrV37">
+      <label data-page-node-id="JgOX4es7DlwWVsSx92YBGY"><input type="radio" name="q8" value="A" data-page-node-id="lD7mdSztXfFMHp0nHBfwEC">A. LRU</label>
+      <label data-page-node-id="NcyJod5gAOKWa1zAbHRrbl"><input type="radio" name="q8" value="B" data-page-node-id="HnaKhcZGUA7yCdgzpUCcte">B. OPT</label>
+      <label data-page-node-id="PlBfFm3poWUUb5MEAg9qZ8"><input type="radio" name="q8" value="C" data-page-node-id="tVGVjkjtpsY762DUqLfRty">C. FIFO</label>
+      <label data-page-node-id="bqkFpCN5pjraHkYDyz1rCf"><input type="radio" name="q8" value="D" data-page-node-id="79LOY0xsDSYD6UooQcXZWq">D. Clock</label>
+    </div>
+    <div class="ans" data-page-node-id="cciRgATWFIymQAr3Y4BiWd"></div>
+  </div>
+
+  <div class="q" data-ans="B" data-type="choice" data-page-node-id="GKoHA5z9gVsZRWwwgFAyRT">
+    <span class="tag choice" data-page-node-id="1dhaqGZGgaqG5Vncc5yuA9">选择 · 第3章</span>
+    <p data-page-node-id="Y3h9Z9d3kyFFtjFlnu60cg">9. 系统频繁换页、CPU 大部分时间花在页面调度上，这种现象称为（　）</p>
+    <div class="opts" data-page-node-id="7eZC2q3OLiDqaK1664JBhd">
+      <label data-page-node-id="0hCjN50rzFOsdJBzyFjxuV"><input type="radio" name="q9" value="A" data-page-node-id="Bm2aDscaq79tHdAEB5rUjh">A. 碎片</label>
+      <label data-page-node-id="Sr8ynLfQC44yuCMmcv6qoC"><input type="radio" name="q9" value="B" data-page-node-id="DPPqvzDVtUk9SG3oQ70X4z">B. 抖动（颠簸）</label>
+      <label data-page-node-id="863m1CtiWQN7gQDQsyQZbZ"><input type="radio" name="q9" value="C" data-page-node-id="RjtjKkzUjUDJTvOHvt3m0X">C. 饥饿</label>
+      <label data-page-node-id="UN4lsTGOO5tOoyzCjnUOtv"><input type="radio" name="q9" value="D" data-page-node-id="mex1JmZgl1gmKahG5heBFS">D. 死锁</label>
+    </div>
+    <div class="ans" data-page-node-id="8s1QH5H0Hg6DmTW6DGMCxW"></div>
+  </div>
+
+  <div class="q" data-ans="B" data-type="choice" data-page-node-id="QyeuZMQUEywuDV9w5bhnXx">
+    <span class="tag choice" data-page-node-id="nzuuAAjW2A30UAwUb0lFjM">选择 · 第4章</span>
+    <p data-page-node-id="47oNjmTr6GvylSGqGn7eCN">10. 用一位二进制表示磁盘块是否空闲的空闲空间管理方法是（　）</p>
+    <div class="opts" data-page-node-id="2VHMgE0GLTAcTrXlTuGtUh">
+      <label data-page-node-id="GedbbxAW3U3yxNBKoF4dp4"><input type="radio" name="q10" value="A" data-page-node-id="AXDQHQSychDSroIBIJowBD">A. 空闲表</label>
+      <label data-page-node-id="ZFnG70uByZxNheoTUauaFE"><input type="radio" name="q10" value="B" data-page-node-id="nOBe5lu9lop9817GPTUysx">B. 位示图</label>
+      <label data-page-node-id="qxYMudLShvOj5ZbWABnEYV"><input type="radio" name="q10" value="C" data-page-node-id="ax2NY6SHMt8hunzDzCzl0m">C. 空闲链表</label>
+      <label data-page-node-id="JQqfvpkW9qElNyLHdw1ZN8"><input type="radio" name="q10" value="D" data-page-node-id="kTQg7bQsuJ8ujhGt8z5nKJ">D. 成组链接</label>
+    </div>
+    <div class="ans" data-page-node-id="ErS6uG6ys1m3xTcSyd9bjm"></div>
+  </div>
+
+  <div class="q" data-ans="A" data-type="choice" data-page-node-id="PHtY65JJwbxACHDo7ChFfn">
+    <span class="tag choice" data-page-node-id="CZRDcxKIzL1JA8lotadi4u">选择 · 第5章</span>
+    <p data-page-node-id="BoMnDxJjsbZqrrJdToiQI4">11. 引入缓冲技术的主要目的是（　）</p>
+    <div class="opts" data-page-node-id="PzybPFMyoHhVrEGFzkVBvm">
+      <label data-page-node-id="SK7frPCCHLGLy7rP1rNjE5"><input type="radio" name="q11" value="A" data-page-node-id="E2wvJyn448UntJDF71uLGA">A. 缓和 CPU 与 I/O 设备速度不匹配的矛盾</label>
+      <label data-page-node-id="hKW3CHU4okCY3SXH55pMve"><input type="radio" name="q11" value="B" data-page-node-id="VsVQB2HQvy2dwMvvQlxkYj">B. 节省内存</label>
+      <label data-page-node-id="E7VFoz6CB3sPj6RA1cTknH"><input type="radio" name="q11" value="C" data-page-node-id="6RwIBkUPFJrQfQPCG9aL3o">C. 提高设备的可靠性</label>
+      <label data-page-node-id="GrUm9DnRhm1b6HthQooyWN"><input type="radio" name="q11" value="D" data-page-node-id="D8raLzGsyzxrUKfwZkWCyT">D. 增加用户可用空间</label>
+    </div>
+    <div class="ans" data-page-node-id="s736uRRDJFwFZNFknZDKQh"></div>
+  </div>
+
+  <div class="q" data-ans="C" data-type="choice" data-page-node-id="sQ6fH7I70J7YWwPQ4HGFu0">
+    <span class="tag choice" data-page-node-id="ETOdYOv8yzaFd1j9wJitfk">选择 · 第5章</span>
+    <p data-page-node-id="YmPGUidWMuSEciCqBHW1Ly">12. SPOOLing 技术将独占设备改造为（　）</p>
+    <div class="opts" data-page-node-id="jCGhgslSNDzFOYvscLZ6U7">
+      <label data-page-node-id="fI5WJAiEzyaacvMAtya1EI"><input type="radio" name="q12" value="A" data-page-node-id="Gjc2ukPSiJLCazJhRxFJdo">A. 块设备</label>
+      <label data-page-node-id="qVVyGrmZgX16kiA2nOoe7r"><input type="radio" name="q12" value="B" data-page-node-id="uscUdE2wACoTUKaM2EihaV">B. 字符设备</label>
+      <label data-page-node-id="yDtcof1YtKSj1GQdZZknDM"><input type="radio" name="q12" value="C" data-page-node-id="DnmbSWMKJ64kUPiEils3wE">C. 共享的虚拟设备</label>
+      <label data-page-node-id="hoLT2PNR06aBIr3NyXrcJ9"><input type="radio" name="q12" value="D" data-page-node-id="rlDNN3izvLjPVGVUSU45kf">D. 脱机设备</label>
+    </div>
+    <div class="ans" data-page-node-id="XnAfRqQPwzG7PpoKwQSxVc"></div>
+  </div>
+
+  <div class="q" data-ans="A" data-type="fill" data-fill-ans="S减1" data-fill-key="s1" data-page-node-id="odnEybUaH8BzjIHczsg2Iy">
+    <span class="tag fill" data-page-node-id="FRLm82WVPBkXQvp87kZ0DI">填空 · 第2章</span>
+    <p data-page-node-id="MOEL3ls7XenblOQi1Iz4TT">13. P 操作（wait 操作）的定义：信号量 <input class="fill-input" style="width:90px;display:inline" data-key="s1" data-page-node-id="m2AqrhEwU42aChOiHWIjVh">，若其值小于 0，则进程阻塞并进入等待队列。</p>
+    <button class="btn reveal" onclick="checkFill(this)" data-page-node-id="VqCS8EyTLEFxQFT9Rz8hYX">对答案</button>
+    <div class="ans" data-page-node-id="isuQ7lajPgQhhh0VCXEIM3"></div>
+  </div>
+
+  <div class="q" data-ans="A" data-type="fill" data-fill-ans="PCB" data-fill-key="s2" data-page-node-id="m5mg5sPXhcBzXjTPsiaEQE">
+    <span class="tag fill" data-page-node-id="MzA3zQDeWhFjNjpa9cPQlx">填空 · 第2章</span>
+    <p data-page-node-id="8EM1AZk4qD4SKryOc0PoIh">14. 进程控制块的英文缩写是 <input class="fill-input" style="width:90px;display:inline" data-key="s2" data-page-node-id="YvG6ikkpUAkaqaHtdVGAC9">，它是进程存在的唯一标志。</p>
+    <button class="btn reveal" onclick="checkFill(this)" data-page-node-id="jy8PhNGFO2cwT45EQCXNfN">对答案</button>
+    <div class="ans" data-page-node-id="RlFYsmajx8YXyq1JkfDfiE"></div>
+  </div>
+
+  <div class="q" data-ans="A" data-type="fill" data-fill-ans="寻道时间" data-fill-key="s3" data-page-node-id="D4hc80t3jOdMN0Jfg525WW">
+    <span class="tag fill" data-page-node-id="nF1jSuIT0PzQiJHVepOMKN">填空 · 第5章</span>
+    <p data-page-node-id="O02MOrbWqFEgMBcsIu0OjH">15. 磁盘访问时间中占比最大、通常成为优化重点的是 <input class="fill-input" style="width:110px;display:inline" data-key="s3" data-page-node-id="fji1DRghrClGOBSOnA135z">。</p>
+    <button class="btn reveal" onclick="checkFill(this)" data-page-node-id="f31qvusko32mn6m4QJef2C">对答案</button>
+    <div class="ans" data-page-node-id="eS3ByLTmLoqxpEUsNwVgqU"></div>
+  </div>
+
+  <div class="q" data-type="judge" data-ans="错" data-page-node-id="y2nRnHpIyDyEQVepte3EtP">
+    <span class="tag judge" data-page-node-id="zPNGpXbXgpFZrgcXP8yYCw">判断 · 第2章</span>
+    <p data-page-node-id="ftZ3fCyXQI7qwZDlv1WLDn">16. 信号量的 P 操作和 V 操作在程序中的位置可以随意互换，不影响程序正确性。</p>
+    <button class="btn" onclick="judge(this,'错')" data-page-node-id="k18VhUa48K1QgsC44C2BFb">答：错</button>
+    <button class="btn" onclick="judge(this,'对')" data-page-node-id="avQdPjBWoKebtMUShyumBC">答：对</button>
+    <div class="ans" data-page-node-id="xcxmUaNcw8FB4bRpHRbkUv"></div>
+  </div>
+
+  <div class="score-bar" data-page-node-id="vFIf6OjbLnvV5vSslXbFLa">
+    得分：<b id="score" data-page-node-id="zVOTfq3z501vISbioHNPuP">0</b> / 已答 <span id="done" data-page-node-id="1Ms6DWKwLtDONi1kKPSeMg">0</span> 题　<span style="color:#999;font-size:.85em" id="wronglist" data-page-node-id="EiF1oZrynpZnh80iIjFieM"></span>
+  </div>
+</section>
+
+<!-- ==================== 考场策略 ==================== -->
+<section data-page-node-id="u9aKSEApFJmAgAnxLd9MmF">
+  <div class="card" data-page-node-id="RGDlLZZCwi65AzDOx2TUU8">
+    <h2 data-page-node-id="gCORyJdruWgeLptl8oK1IK">🚨 考场 60 分抢救策略</h2>
+    <h3 data-page-node-id="uhbejAcxw0oFvN9I5MxWa1">考前 1 小时</h3>
+    <ul data-page-node-id="wJLJjpZSE00wBDSHZHOYTu">
+      <li data-page-node-id="V0IJu3JbVJF7ERVJEDqANl">只看<b data-page-node-id="lYfKTIz0DF5ZkAf5AYmghY">必背清单 20 条</b>和错题，不看新内容。</li>
+      <li data-page-node-id="DfvBLlS8NkIcWPQQSmn9B6">检查：准考证、身份证、2B 铅笔、黑色签字笔、橡皮、手表（如允许）。</li>
+    </ul>
+    <h3 data-page-node-id="8F0kM72FkBE1QOCxGrJ7h8">答题顺序</h3>
+    <ol data-page-node-id="F59Bk6ockG11h4z6vK7yRD">
+      <li data-page-node-id="eNduqycfsxguU7tN7Aegvg">先做选择/判断/填空（背过的直接写，30 分钟内拿下）。</li>
+      <li data-page-node-id="fhqv6v6ZXFO13jA8UHEfj9">再做简单应用题（页式地址变换、PV 操作、磁盘调度——本页都练过套路）。</li>
+      <li data-page-node-id="5vG3DXnPhWJgVLj4iUbvD9">最后攻大题（银行家算法、置换算法计算题），不会写也要<b data-page-node-id="P8kInziZ9CKlKKk2ifO4qd">写出公式和相关概念</b>，过程分是给自考卷面留的余地。</li>
+    </ol>
+    <h3 data-page-node-id="cS1dhAryoDSZOHvZS3ydeS">各题型保分技巧</h3>
+    <ul data-page-node-id="xUCecXDRPYXs3oGAhukvOk">
+      <li data-page-node-id="Bfi6DzwNwzombxbpdbZKZj">选择题：排除法优先，"绝对化措辞"（一定/必须/所有）的选项大概率是错的；"可能/通常/一般来说"的选项大概率是对的。</li>
+      <li data-page-node-id="d5PlkgNZybpj8g8qdSE47h">填空题：实在不会就填本页出现过的关键词（信号量、PCB、抖动、位示图、LRU…），命中率不低。</li>
+      <li data-page-node-id="GruKVb7f2KCwYe4FPzrbRQ">计算题：<b data-page-node-id="GSdkJJOwbGi5JHHisIsgo8">必须写步骤</b>。"页号=逻辑地址÷页大小"这种公式哪怕最后算错，写公式也有过程分。卷面整洁，分点作答。</li>
+      <li data-page-node-id="hGe1kevElG7DKnUXkaDiFv">简答题：按"定义 → 特点/组成 → 举例"三段式写，字数宁可超、不要空白。</li>
+    </ul>
+    <div class="warn" data-page-node-id="yirIG9QRffC6LRSZgL9Rqd"><b data-page-node-id="2VsinjdF574sMIGTShhXnW">两条红线：</b>① 不留空白，选择不确定也要蒙（排除后二选一）；② 计算题步骤优先于结果，公式分必拿。</div>
+  </div>
+  <div class="card" data-page-node-id="pBWUGMb9XzmS69yUdnsggD">
+    <h2 data-page-node-id="18s4b90vyFrfZaVwWJ1ycd">⏰ 时间分配建议（以 150 分钟卷面为例）</h2>
+    <table data-page-node-id="ImeqqvU3kNZX3ksGzTHMBE">
+      <tr data-page-node-id="BmmorOC1p9Kr9f2tElEnle"><th data-page-node-id="4N39dRNavIhWTqiDLMCQHW">时段</th><th data-page-node-id="WGLR1pDuDvlY4toRYSEPW5">任务</th></tr>
+      <tr data-page-node-id="YO3mI0ppuZrwIT3zjIOLRe"><td data-page-node-id="idIXlHeFSlL8r3wl2okOT2">0–10 min</td><td data-page-node-id="9ljVo9eKz2vjOZvt1MRzDZ">通览全卷，标记会做/没把握的题</td></tr>
+      <tr data-page-node-id="IheC33QuwUPV9b3CfOT8QB"><td data-page-node-id="Xm7rGUd0QNfsPlA4nFYRa7">10–50 min</td><td data-page-node-id="NoSfniW5GR2Ibh8RLGlloH">选择 + 判断 + 填空（背过的部分）</td></tr>
+      <tr data-page-node-id="i97s87kIdgD79c4qFVyYhZ"><td data-page-node-id="ZsR4CL2bALMPfAfMXpQTNX">50–110 min</td><td data-page-node-id="tEKczNCpMg1ImVme92zlS3">计算题与应用题（本页练过的套路）</td></tr>
+      <tr data-page-node-id="zqJ6Vl3v8hZ32lYhxNjqMK"><td data-page-node-id="iGSxwsHoIwuSUJyBgdaqU0">110–140 min</td><td data-page-node-id="BLyi26Gn84MnPdTGr5WhrK">简答/综合题，按三段式写满</td></tr>
+      <tr data-page-node-id="9taqiIGvpWyenFj9Jd0dgx"><td data-page-node-id="dr1TsC9HbAeNFdNob9Mh1M">最后 10 min</td><td data-page-node-id="WM3od2pYuUr08VWVJ6hCAp">回头检查空白题，全部补满</td></tr>
+    </table>
+  </div>
+</section>
+
+<footer data-page-node-id="WFLl2pwYwtomBEYyXy1Zfw">操作系统（13180）考前速成 · 内容基于通用自考大纲整理，具体考纲以湖北省教育考试院最新发布为准 · 祝考试顺利</footer>
+</div>
+
+<script>
+function go(idx, btn){
+  document.querySelectorAll('section').forEach((s,i)=>s.classList.toggle('active', i===idx));
+  document.querySelectorAll('nav button').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  window.scrollTo({top:0});
+}
+
+let score = 0, doneCount = 0;
+const wrongSet = new Set();
+
+function updateBar(){
+  document.getElementById('score').textContent = score;
+  document.getElementById('done').textContent = doneCount;
+  document.getElementById('wronglist').textContent = wrongSet.size ? ('错题：'+[...wrongSet].join('、')) : '';
+}
+
+// 选择题
+document.querySelectorAll('.q[data-type="choice"]').forEach(q=>{
+  const name = 'q'+(q.querySelector('input').name.slice(0)? q.querySelector('input').name : '');
+  q.querySelectorAll('input[type=radio]').forEach(r=>{
+    r.addEventListener('change', ()=>{
+      if(q.dataset.locked) return;
+      q.dataset.locked = 1;
+      doneCount++;
+      const ans = q.dataset.ans;
+      const ok = r.value === ans;
+      if(ok){ score++; } else { wrongSet.add(q.querySelector('.tag').nextElementSibling.textContent.trim().slice(0,2)); }
+      const box = q.querySelector('.ans');
+      box.style.display='block';
+      box.className = 'ans ' + (ok?'right':'wrong');
+      box.innerHTML = (ok?'✔ 答对了。':'✘ 正确答案：'+ans+'。') + getExp(q);
+      updateBar();
+    });
+  });
+});
+
+function getExp(q){
+  const map = {
+    q1:'并发与共享互为存在条件，是 OS 最基本的两个特征。',
+    q2:'阻塞→就绪是被动唤醒，必须先进入就绪队列等待调度，不能直接运行。',
+    q3:'互斥信号量 mutex 初值为 1，表示一次只允许一个进程进入临界区；同步信号量初值为资源数。',
+    q4:'死锁必要条件：互斥、占有且等待、不可剥夺、循环等待。时间片轮转是调度算法，与死锁无关。',
+    q5:'SJF 短作业优先平均等待时间最短，但可能饿死长作业。',
+    q6:'分页固定大小→最后一页可能装不满→内部碎片；分段不定长→段之间产生小空间→外部碎片。',
+    q7:'8448 ÷ 4096 = 2（页号），8448 mod 4096 = 256（偏移）。记住：整除取页号，取余得偏移。',
+    q8:'FIFO 有 Belady 异常：页框从 3 增到 4 时缺页次数反而可能增多。LRU/OPT 属于栈式算法，无此异常。',
+    q9:'抖动（颠簸/Thrashing）：缺页率过高，CPU 忙于页面换入换出，几乎不做有效工作。',
+    q10:'位示图：每一位对应一个盘块，0/1 表示空闲/占用。',
+    q11:'缓冲技术的核心目的：缓和 CPU 与 I/O 速度不匹配，减少中断次数。',
+    q12:'SPOOLing 用磁盘上的输入/输出井模拟脱机技术，把独占设备（打印机）变成可共享的虚拟设备。'
+  };
+  const key = q.querySelector('input').name;
+  return map[key] ? ' 解析：'+map[key] : '';
+}
+
+// 填空题
+function checkFill(btn){
+  const q = btn.closest('.q');
+  if(q.dataset.locked) return;
+  q.dataset.locked = 1;
+  doneCount++;
+  const input = q.querySelector('.fill-input');
+  const val = input.value.trim().replace(/\s/g,'');
+  const std = q.dataset.fillAns.replace(/\s/g,'');
+  const ok = val !== '' && (val === std || std.indexOf(val) !== -1 || val.indexOf(std) !== -1);
+  if(ok){ score++; } else { wrongSet.add(q.querySelector('.tag').nextElementSibling.textContent.trim().slice(0,2)); }
+  const box = q.querySelector('.ans');
+  box.style.display='block';
+  box.className = 'ans ' + (ok?'right':'wrong');
+  box.textContent = (ok?'✔ 正确。':'✘ 标准答案：'+std+'。你填的是"'+(input.value.trim()||'空')+'"。');
+  updateBar();
+}
+
+// 判断题
+function judge(btn, userAns){
+  const q = btn.closest('.q');
+  if(q.dataset.locked) return;
+  q.dataset.locked = 1;
+  doneCount++;
+  const ok = userAns === q.dataset.ans;
+  if(ok){ score++; } else { wrongSet.add(q.querySelector('.tag').nextElementSibling.textContent.trim().slice(0,2)); }
+  const box = q.querySelector('.ans');
+  box.style.display='block';
+  box.className = 'ans ' + (ok?'right':'wrong');
+  box.textContent = (ok?'✔ 正确。':'✘ 本题说法错误。') + ' 解析：P、V 操作顺序是有讲究的——P 操作先于对应的 V 操作执行才能保证正确性；若 V 提前、P 随意放置，会破坏互斥/同步逻辑，甚至引发死锁。';
+  updateBar();
+}
+</script>
+</body>
+</html>
